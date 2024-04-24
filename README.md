@@ -2,7 +2,7 @@
 
 Para ver los cambios en cada versión del proyecto, consulta el [Changelog](CHANGELOG.md).
 
-# annular
+# angular
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.2.
 
@@ -29,3 +29,53 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+# Proyecto Angular en Firebase Hosting
+
+Este documento describe los pasos necesarios para compilar y desplegar el proyecto Angular en Firebase Hosting.
+
+## Pre-requisitos
+
+- Asegúrate de tener la última versión de [Node.js](https://nodejs.org/) instalada.
+- Asegúrate de tener instalado Angular CLI: `npm install -g @angular/cli`.
+- Asegúrate de tener Firebase CLI instalado: `npm install -g firebase-tools`.
+- Inicia sesión en Firebase CLI con: `firebase login`.
+
+Compilar el Proyecto
+
+Para compilar tu proyecto Angular y prepararlo para el despliegue, ejecuta el siguiente comando:
+
+```bash
+ng build --prod
+```
+
+## Configuración de Firebase
+
+Antes de desplegar, debes tener un archivo firebase.json en la raíz de tu proyecto con la configuración correcta. Aquí hay un ejemplo de cómo debería verse:
+
+```bash
+{
+  "hosting": {
+    "public": "dist", // Cambia esto si tu directorio de salida es diferente
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
+```
+
+## Desplegar en Firebase Hosting
+
+Una vez que tu aplicación está compilada y tienes el archivo firebase.json configurado, ejecuta el siguiente comando para desplegar tu aplicación:
+
+```bash
+firebase deploy --only hosting
+```
