@@ -1,0 +1,157 @@
+agm-map {
+    // width: 800px;
+    height: 300px;
+    text-align: center;
+}
+
+.mat-form-field {
+    display: inline !important;
+}
+
+.button-with-100 {    
+    min-width: 100px;
+    width: 90%;   
+ }
+
+ .icon-right-middle {
+    position: absolute;
+    right: 4px;
+    top: 5px;
+ }
+
+ .icon-disabled {
+    color: #bdbdbd;
+ }
+
+ #imgFirma {
+    width: 300px;
+ }
+
+ .preview-image {
+    width: 300px;
+    max-width: 45vw;
+    max-height: 250px;
+    object-fit: cover;
+  }
+ 
+ .button-right-top {
+    position: absolute;
+    right: 4px;
+    top: 0;
+ }
+
+.save-car {
+    right: 40px;
+}
+ 
+.spinner-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.save-ot {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 999999;
+    right: 20px;
+    bottom: 100px;
+    opacity: .5;
+    color: #fff;
+    background-color: rgba(0, 0, 0, .75);
+    border-radius: 50%;
+    transition: 0.3s;
+    &:hover {
+        opacity: 1;
+    }
+}
+
+mat-cell:nth-child(1),
+mat-header-cell:nth-child(1) {
+    flex: 0 0 30%;
+}
+
+mat-cell:nth-child(5),
+mat-header-cell:nth-child(5) {
+    flex: 0 0 10%;
+}
+
+
+::ng-deep {
+
+    .color-option {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+  
+      &__preview {
+        display: block;
+        width: 1.125em;
+        height: 1.125em;
+        border-radius: 50%;
+      }
+    }
+  
+    .ngx-mat-combobox-option {
+        white-space: pre-line !important;
+        border-bottom: 1px solid #cfcfcc;
+    }
+
+    .rainbow {
+      color: white;
+      // https://www.w3schools.com/colors/color_tryit.asp
+      background: linear-gradient(
+          -45deg,
+          rgba(255, 0, 0, .5), //red
+          rgba(255,165,0, .5), //orange
+          rgba(255, 255, 0, .5), //yellow
+          rgba(0, 255, 0, .5), //green
+          rgba(0, 0, 255, .5), //blue
+          rgba(75, 0, 130, .5), //indigo
+          rgba(238,130,238, .5) //violet
+      );
+  
+      .ngx-mat-combobox-option-selected {
+        color: #fff;
+        font-weight: 500;
+      }
+    }
+  
+  }
+
+  .foto-card {
+    max-width: 400px;
+    margin-bottom: 8px;
+  }
+
+  .nueva-opcion {
+    background-color: ghostwhite !important;
+    padding: 4px;
+  }
+
+  .icono-flex-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  ::ng-deep .google_map_container {
+    width: 100%;
+    display: block;
+  
+    .map-container {
+      width: 100% !important;
+      height: 300px !important;
+      border-radius: 4px !important;
+    }
+  }
+
+  .text-red {
+    color: red;
+  }
+
+  .mat-button-toggle-group {
+    margin-left: 10px;
+  }

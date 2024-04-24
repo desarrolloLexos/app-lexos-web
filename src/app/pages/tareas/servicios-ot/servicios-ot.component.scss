@@ -1,0 +1,33 @@
+.mat-card-content {
+    cursor: pointer;
+
+    &:hover {
+        transition: 0.3s;
+        box-shadow: 0px 1px 2px #000, 0px 3px 3px rgba(0, 0, 0, 0), 0px 10px 10px rgba(0, 0, 0, 0), 0px 14px 14px rgba(0, 0, 0, 0), 0px 19px 19px rgba(0, 0, 0, 0);
+        // background-color: rgba(240, 241, 243, 0.877);
+        background-color: #d3d3d3;
+    }
+}
+
+.mat-card {
+    padding: 8px 2px 0px 2px;
+}
+.mat-card-content {
+    margin: 0 !important;
+}
+.mat-card.custom-card .mat-card-header .mat-card-title {
+    padding-left: 10px;
+}
+
+.bg-yellow {
+    background-color: #f8fd13;
+}
+
+.bg-finaly {
+    background-color: lightgreen;
+}
+
+.mat-card-subtitle, .mat-card-content  {
+    // font-size: calc(0.11em + 1vw) !important;
+    padding: 4px;
+}

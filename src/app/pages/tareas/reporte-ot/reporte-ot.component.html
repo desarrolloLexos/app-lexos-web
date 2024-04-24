@@ -1,0 +1,108 @@
+<div class="container">
+    <div class="search-container">
+
+      <mat-form-field appearance="outline">
+         <mat-select placeholder="Cliente" [(ngModel)]="cliente"
+                     (selectionChange)="onChangeCliente($event)">
+             <mat-option *ngFor="let item of clients" [value]="item.cliente">
+                 {{ item.cliente }}
+             </mat-option>
+         </mat-select>
+     </mat-form-field>
+
+      <mat-form-field appearance="outline">
+         <mat-select placeholder="Local"  [disableOptionCentering]="true" #select1 
+                     [(ngModel)]="local" (selectionChange)="onChangeLocal($event)">
+            <mat-select-filter  *ngIf="select1.focused"   [array]="locals" [color]="'rgb(236, 241, 255)'"
+                               [displayMember]="'nombre'" [placeholder]="'Buscar...'"
+                               (filteredReturn)="filteredLocals = $event"></mat-select-filter>
+            <mat-option *ngFor="let item of filteredLocals" [value]="item.nombre">
+               {{item.nombre}}
+            </mat-option>
+         </mat-select>
+      </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-select placeholder="Responsable" [(ngModel)]="idResponsable"
+                        (selectionChange)="onChangeUser($event)">
+                <mat-option *ngFor="let user of users" [value]="user.id_person">
+                    {{ user.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+         <mat-select placeholder="Tipo de servicio"  [(ngModel)]="servicio"
+                     (selectionChange)="onChangeServicio($event.value)">
+             <mat-option *ngFor="let tipo of tipoServicio" [value]="tipo.value" >
+                 {{tipo.viewValue}}
+             </mat-option>
+         </mat-select>
+     </mat-form-field>
+
+     <button mat-raised-button color="primary" (click)="onClickClean()">
+         Limpiar <mat-icon>cleaning_services</mat-icon>
+      </button>
+      &nbsp; 
+      <button mat-raised-button color="accent" (click)="onExportExcel()" [disabled]="exportando">
+         <em class="fas fa-sync fa-spin" *ngIf="exportando"></em>
+         Excel 
+         <mat-icon svgIcon="thumbs-up" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
+      </button>
+    </div>
+    <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="wo_folio">
+            <mat-header-cell *matHeaderCellDef> N° OT </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.wo_folio}} </mat-cell>
+        </ng-container>
+         <ng-container matColumnDef="local">
+            <mat-header-cell *matHeaderCellDef> Local </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.local}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="tasks_log_task_type_main">
+            <mat-header-cell *matHeaderCellDef> Tipo de llamado </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.tasks_log_task_type_main}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef> Descripción </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="equipo">
+            <mat-header-cell *matHeaderCellDef> Equipo </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.items_log_description}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="personnel_description">
+            <mat-header-cell *matHeaderCellDef> Responsable </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.personnel_description}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="estado">
+            <mat-header-cell *matHeaderCellDef> Estado / Visto</mat-header-cell>
+            <mat-cell *matCellDef="let element"> 
+              <span [ngClass]="getCssEstado(element.id_status_work_order)">
+                  {{element.work_orders_status_custom_description}}
+               </span> 
+               {{(element.id_status_work_order===6 && !element.review_date?'🔴':'🟢')}}
+               {{(element.initial_date?'​⚡​':'🚫')}}
+               
+            </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="hora">
+            <mat-header-cell *matHeaderCellDef> Hora </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.resources_hours}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="fecha">
+            <mat-header-cell *matHeaderCellDef> Fecha </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.date_maintenance}} </mat-cell>
+         </ng-container>
+         <ng-container matColumnDef="tiempo">
+            <mat-header-cell *matHeaderCellDef> Tiempo </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.duration}} </mat-cell>
+         </ng-container>
+         
+         <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+         <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
+    </mat-table>
+    <div class="spinner-table" *ngIf="loading">
+        <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
+    </div>
+  </div>

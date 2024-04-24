@@ -1,0 +1,177 @@
+<app-content-header
+  [icon]="'view_agenda'"
+  [title]="'Ordenes de Trabajo'"
+  [hideBreadcrumb]="false"
+  [hasBgImage]="true"
+  [class]="'pb-4'"
+></app-content-header>
+
+<div fxLayout="column" fxLayoutAlign="start center">
+  <mat-spinner *ngIf="loading"></mat-spinner>
+</div>
+
+<div fxLayout="column" fxLayout.gt-sm="row wrap" class="p-2">
+  <div fxFlex="25%" class="p-1" *ngFor="let tarea of tareas">
+    <mat-card class="custom-card" appMaterialElevation>
+      <mat-card-header
+        [class]="
+          tarea.id_status_work_order === 7
+            ? 'bg-warn p-1'
+            : tarea.id_status_work_order === 8
+            ? 'bg-primary p-1'
+            : tarea.id_status_work_order === 3
+            ? 'bg-finaly p-1'
+            : tarea.id_status_work_order === 6
+            ? 'bg-yellow p-1'
+            : ''
+        "
+        fxLayoutAlign="space-between center"
+      >
+        <mat-card-title class="m-0 text-center"
+          ><h3>Orden de Trabajo {{ tarea.wo_folio }}</h3></mat-card-title
+        >
+        <button mat-icon-button [matMenuTriggerFor]="submenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #submenu="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="estados">
+            Cambiar estado de Ot
+          </button>
+          <!-- <button mat-menu-item [matMenuTriggerFor]="invertebrates">
+            Invertebrates
+          </button>-->
+        </mat-menu>
+
+        <mat-menu #estados="matMenu">
+          <button
+            (click)="menuOpened(6, tarea.requested_by, tarea.wo_folio)"
+            mat-menu-item
+            [style.background]="'yellow'"
+          >
+            Técnico asignado
+          </button>
+          <button
+            mat-menu-item
+            (click)="menuOpened(8, tarea.requested_by, tarea.wo_folio)"
+            [style.background]="'#303f9f'"
+          >
+            Por revisar
+          </button>
+          <button
+            (click)="menuOpened(3, tarea.requested_by, tarea.wo_folio)"
+            mat-menu-item
+            [style.background]="'lightgreen'"
+          >
+            Finalizada
+          </button>
+          <button
+            mat-menu-item
+            (click)="menuOpened(9, tarea.requested_by, tarea.wo_folio)"
+            [style.background]="'gray'"
+          >
+            Anulado
+          </button>
+        </mat-menu>
+      </mat-card-header>
+      <mat-card-content (click)="getRecord(tarea)">
+        <mat-grid-list cols="3" rowHeight="2.5rem">
+          <mat-grid-tile [style.background]="'lightgray'" colspan="1"
+            >Fecha</mat-grid-tile
+          >
+          <mat-grid-tile [style.background]="'white'" colspan="2">
+            {{ tarea.cal_date_maintenance | date : "dd/MM/yyyy" }}
+          </mat-grid-tile>
+          <mat-grid-tile [style.background]="'lightgray'" colspan="1"
+            >Técnico</mat-grid-tile
+          >
+          <mat-grid-tile
+            [style.background]="'white'"
+            colspan="2"
+            class="text-center"
+          >
+            {{ tarea.personnel_description }}
+          </mat-grid-tile>
+          <mat-grid-tile [style.background]="'lightgray'" colspan="1"
+            >Estado</mat-grid-tile
+          >
+          <mat-grid-tile
+            [style.background]="'white'"
+            colspan="2"
+            [ngSwitch]="tarea.id_status_work_order"
+          >
+            <span *ngSwitchCase="1">En Proceso</span>
+            <span *ngSwitchCase="2">En Revisión</span>
+            <span *ngSwitchCase="3">Finalizada</span>
+            <span *ngSwitchCase="4">Cancelado</span>
+            <span *ngSwitchCase="5">Pendiente</span>
+            <span *ngSwitchCase="6">Técnico asignado</span>
+            <span *ngSwitchCase="7">Por asignar técnico</span>
+            <span *ngSwitchCase="8">Por revisar</span>
+            <span *ngSwitchCase="9">Anulado</span>
+            <span *ngSwitchDefault="">{{ tarea.id_status_work_order }}</span>
+          </mat-grid-tile>
+          <mat-grid-tile [style.background]="'lightgray'" colspan="1"
+            >Local</mat-grid-tile
+          >
+          <mat-grid-tile
+            [style.background]="'white'"
+            colspan="2"
+            class="text-center"
+            >{{ tarea.local }}</mat-grid-tile
+          >
+          <mat-grid-tile
+            [style.background]="'lightgray'"
+            colspan="1"
+            [rowspan]="2"
+            >Activo</mat-grid-tile
+          >
+          <mat-grid-tile
+            [style.background]="'white'"
+            colspan="2"
+            [rowspan]="2"
+            class="text-center"
+          >
+            <span *ngIf="tarea.items_log_description">{{
+              tarea.items_log_description?.length > 55
+                ? tarea.items_log_description?.slice(0, 55) + "..."
+                : tarea.items_log_description
+            }}</span>
+            <span *ngIf="!tarea.items_log_description">{{
+              tarea.parent_description?.length > 55
+                ? tarea.parent_description?.slice(0, 55) + "..."
+                : tarea.parent_description
+            }}</span>
+          </mat-grid-tile>
+          <mat-grid-tile
+            [style.background]="'lightgray'"
+            colspan="1"
+            [rowspan]="2"
+            >Tarea</mat-grid-tile
+          >
+          <mat-grid-tile
+            [style.background]="'white'"
+            colspan="2"
+            [rowspan]="2"
+            class="text-center"
+          >
+            {{
+              tarea.description.length > 300
+                ? tarea.description.slice(0, 300) + "..."
+                : tarea.description
+            }}
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions
+        fxLayoutAlign="end center"
+        class="secondary-text-color"
+        rowHeight="1rem"
+      >
+        <!--<button mat-icon-button><mat-icon>favorite</mat-icon></button>
+        <button mat-icon-button><mat-icon>share</mat-icon></button>-->
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <mat-divider></mat-divider>
+</div>

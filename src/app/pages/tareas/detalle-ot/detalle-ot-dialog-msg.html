@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>{{data?.titulo}}</h1>
+<div mat-dialog-content>
+  <ul>
+    <li *ngFor="let campo of data.vector" style="list-style-type: none;">
+      <span>&#10003;</span> {{campo}}
+    </li>
+    
+  </ul>
+
+</div>

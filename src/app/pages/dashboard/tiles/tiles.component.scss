@@ -1,0 +1,29 @@
+@import '~@angular/material/theming';
+
+.tile{
+    text-align: right;
+    .mat-icon{
+        position: absolute;
+        left: 4px;
+        top: 10%;
+        // line-height: 0;
+        font-size: 45px;
+        opacity: 0.3;
+        width: auto;
+        height: auto;
+    }
+    h2{
+        font-weight: 500;
+        caret-color: transparent;
+    }
+    p{
+        text-transform: uppercase;
+    }
+}
+
+.clickable {
+    cursor: pointer;
+    &:hover {
+      @include mat-elevation(8);
+    }
+  }

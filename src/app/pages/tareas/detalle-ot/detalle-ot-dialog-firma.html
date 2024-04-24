@@ -1,0 +1,16 @@
+<div>
+    <signature-pad #signature [options]="signaturePadOptions" (drawStart)="drawStart($event)">
+    </signature-pad>
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+
+        <button mat-mini-fab color="accent" aria-label="Limpiar" (click)="signature.clear()">
+            <mat-icon>cleaning_services</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" aria-label="Agregar" (click)="save()">
+            <mat-icon>save</mat-icon>
+        </button>
+        <button mat-mini-fab color="warn" aria-label="Agregar" (click)="cancel()">
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </div>
+</div>

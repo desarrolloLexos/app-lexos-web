@@ -1,0 +1,14 @@
+<button mat-stroked-button color="warn" (click)="createPDF()" [disabled]="!botonActivo">
+    <em class="fas fa-sync fa-spin" *ngIf="!botonActivo"></em>
+    {{ botonPDF }}
+    <mat-icon>picture_as_pdf</mat-icon>        
+</button>
+
+<button mat-raised-button color="warn" 
+        *ngIf="showAnular()"
+         style="right: 0px; position: absolute"
+         (click)="anularOT()" [disabled]="!botonActivoAnular">
+    <em class="fas fa-sync fa-spin" *ngIf="!botonActivoAnular"></em>
+    {{ botonAnular }}
+    <mat-icon>gpp_maybe</mat-icon>        
+</button>

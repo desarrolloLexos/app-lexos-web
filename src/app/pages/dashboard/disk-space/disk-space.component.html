@@ -1,0 +1,111 @@
+<div fxLayout="row wrap" #resizedDiv>
+    <div fxFlex="100" fxFlex.gt-sm="75" fxFlex.sm="50" class="p-2"> 
+        <mat-card fxFlexAlign="stretch">
+            <mat-card-header fxLayoutAlign="center">                
+                <mat-card-subtitle><h2>Servicios Realizados - {{ mesActual }} de {{ anioActual }}</h2></mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div fxLayout="row" fxLayoutAlign="space-around">
+                    <mat-checkbox color="primary" class="example-margin" [checked]="explodeSlices" (change)="explodeSlices = !explodeSlices">Porción</mat-checkbox>
+                    <mat-checkbox color="primary" class="example-margin" [checked]="showLabels" (change)="showLabels = !showLabels">Etiquetas</mat-checkbox>
+                    <mat-form-field appearance="fill">
+                      <mat-label>Datos</mat-label>
+                      <mat-select [(ngModel)]="muestraServicio" name="food" (selectionChange)="changeMuestraServicio()">
+                        <mat-option *ngFor="let opcion of opcionesMuestraServicio" [value]="opcion">
+                          {{opcion}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                <div class="w-100 h-500p" #resizedDiv>
+                    <ngx-charts-pie-chart
+                        [scheme]="colorScheme"
+                        [results]="data"
+                        [view]="[800,400]"
+                        [legend]="showLegend"
+                        [legendTitle]="muestraServicio"
+                        [explodeSlices]="explodeSlices"
+                        [labels]="showLabels"
+                        [doughnut]="doughnut"
+                        [gradient]="gradient"
+                        [trimLabels]="false"
+                        (select)="onSelect($event)">
+                    </ngx-charts-pie-chart>   
+                </div>               
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div fxFlex="100" fxFlex.gt-sm="25" class="p-2">    
+        <mat-card>
+            <mat-card-header fxLayoutAlign="center">
+                <mat-card-subtitle><h2>Filtros de Servicios</h2></mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content fxLayout="column">
+                <div fxLayout="column" fxFlex>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Clientes</mat-label>
+                        <mat-select [formControl]="formClientes" multiple
+                                    (selectionChange)="changeCliente($event)">                          
+                          <mat-option *ngFor="let item of clients" [value]="item">{{item.cliente}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+                <div fxLayout="column" fxFlex *ngIf="formLocales.value">                 
+                      <mat-form-field appearance="fill">
+                        <mat-label>Locales</mat-label>
+                        <mat-select [formControl]="formLocales" multiple #select1
+                                    (selectionChange)="changeLocal($event)">
+                          <mat-select-trigger>
+                            {{formLocales?.value[0]?.value || ''}}
+                            <span *ngIf="(formLocales?.value?.length || 0) > 1" class="example-additional-selection">
+                              (+{{(formLocales?.value?.length || 0) - 1}} {{formLocales?.value?.length === 2 ? 'otro' : 'otros'}})
+                            </span>
+                          </mat-select-trigger>
+                          <!-- <mat-select-filter  *ngIf="select1.focused"   [array]="locals" [color]="'rgb(236, 241, 255)'"
+                                             [placeholder]="'Buscar...'"
+                                             (filteredReturn)="formLocales = $event">
+                          </mat-select-filter> -->
+                          <mat-option *ngFor="let item of locals" [value]="item">
+                           {{item.value}}
+                          </mat-option>       
+                        </mat-select>
+                      </mat-form-field>
+                </div>
+                <div fxLayout="column" fxFlex *ngIf="formEquipos.value">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Equipos</mat-label>
+                        <mat-select [formControl]="formEquipos" multiple #select2
+                                    (selectionChange)="changeEquipo($event)">
+                          <mat-select-trigger>
+                            {{formEquipos?.value[0]?.value || ''}}
+                            <span *ngIf="(formEquipos.value?.length || 0) > 1" class="example-additional-selection">
+                              (+{{(formEquipos?.value?.length || 0) - 1}} {{formEquipos?.value?.length === 2 ? 'otro' : 'otros'}})
+                            </span>
+                          </mat-select-trigger>
+                          <!-- <mat-select-filter  *ngIf="select2.focused"   [array]="equipments" [color]="'rgb(236, 241, 255)'"
+                                             [displayMember]="'nombre'" [placeholder]="'Buscar...'"
+                                             (filteredReturn)="filteredEquipments = $event">
+                          </mat-select-filter> -->
+                          <mat-option *ngFor="let item of equipments" [value]="item">
+                           {{item.value}}
+                          </mat-option>       
+                        </mat-select>
+                      </mat-form-field>
+                </div>                
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100"> 
+      <mat-card>
+        <mat-card-content>
+            <ngx-charts-advanced-pie-chart
+                [view]="[1200, 200]"
+                [results]="data"
+                [gradient]="true" >
+          </ngx-charts-advanced-pie-chart>
+        </mat-card-content>
+      </mat-card>
+    </div>
+</div>

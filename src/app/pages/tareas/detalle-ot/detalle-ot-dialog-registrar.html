@@ -1,0 +1,115 @@
+<h1 mat-dialog-title>Registro {{titulo}}</h1>
+<div mat-dialog-content>
+  <p>Ingrese nueva opción</p>
+  <div *ngIf="!equipo 
+            && !local
+            && !metodoDeteccion
+            && !tipoFalla
+            && !causaFalla">
+    <mat-form-field appearance="fill">
+      <mat-label>Opción</mat-label>
+      <input matInput [(ngModel)]="opcion.nombre" minlength="3" required>
+    </mat-form-field>
+    <mat-error *ngIf="verificarExistencia()">
+      El registro ya existe.
+    </mat-error> 
+  </div>
+
+  <div *ngIf="tipoFalla">
+    <mat-form-field appearance="fill">
+      <mat-label>Descripción</mat-label>
+      <input matInput [(ngModel)]="tipoFalla.description" minlength="3" required>
+    </mat-form-field>
+    <mat-error *ngIf="verificarExistencia()">
+      El tipo de falla ya existe.
+    </mat-error> 
+  </div>
+
+  <div *ngIf="causaFalla">
+    <mat-form-field appearance="fill">
+      <mat-label>Descripción</mat-label>
+      <input matInput [(ngModel)]="causaFalla.description" minlength="3" required>
+    </mat-form-field>    
+    <mat-error *ngIf="verificarExistencia()">
+      La causa ya existe.
+    </mat-error> 
+  </div>
+
+  <div *ngIf="metodoDeteccion">
+    <mat-form-field appearance="fill">
+      <mat-label>Descripción</mat-label>
+      <input matInput [(ngModel)]="metodoDeteccion.description" minlength="3" required>
+    </mat-form-field>
+    <mat-error *ngIf="verificarExistencia()">
+      El método ya existe.
+    </mat-error>  
+  </div>
+
+  <div *ngIf="equipo">
+    <mat-form-field appearance="fill">
+      <mat-label>Código</mat-label>
+      <input matInput [(ngModel)]="equipo.codigo" minlength="3" required>
+    </mat-form-field>   
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input matInput [(ngModel)]="equipo.nombre" minlength="2" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Tipo</mat-label>
+      <input matInput [(ngModel)]="equipo.tipo" minlength="2" required style="text-transform: uppercase;">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Otro</mat-label>
+      <input matInput [(ngModel)]="equipo.otro">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Código Local</mat-label>
+      <input matInput [(ngModel)]="equipo.codigolocal" required disabled>
+    </mat-form-field>
+    <mat-error *ngIf="verificarExistencia()">
+      El equipo ya existe.
+    </mat-error>  
+  </div>
+
+
+  <div *ngIf="local">   
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre</mat-label>
+      <input matInput [(ngModel)]="local.nombre" minlength="2" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Dirección</mat-label>
+      <input matInput [(ngModel)]="local.direccion" minlength="2" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Ciudad</mat-label>
+      <input matInput [(ngModel)]="local.ciudad">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>CECO</mat-label>
+      <input matInput [(ngModel)]="local.ceco" minlength="3" required>
+    </mat-form-field> 
+    <mat-form-field appearance="fill">
+      <mat-label>Código</mat-label>
+      <input matInput [(ngModel)]="local.codigo" minlength="3" required>
+    </mat-form-field>   
+    <mat-form-field appearance="fill">
+      <mat-label>Latitud</mat-label>
+      <input matInput [(ngModel)]="local.latitude" required>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Longitud</mat-label>
+      <input matInput [(ngModel)]="local.longitud" required>
+    </mat-form-field>
+    <mat-error *ngIf="verificarExistencia()">
+      El local ya existe.
+    </mat-error>  
+  </div>
+</div>
+
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between stretch">
+  <button mat-stroked-button color="warn" (click)="onNoClick()">Cancelar</button>
+  <button mat-stroked-button color="primary" 
+          (click)="onClick()" [disabled]="verificarExistencia()"
+          cdkFocusInitial>Registrar</button>
+</div>

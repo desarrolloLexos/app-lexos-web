@@ -1,0 +1,40 @@
+<app-content-header [icon]="'library_add'" 
+                    [title]="'Orden de Trabajo'"
+                    [hideBreadcrumb]="false" 
+                    [hasBgImage]="true" 
+                    [backButton]="true"
+                    [class]="'pb-4'"></app-content-header>
+
+<app-pdf *ngIf="(esAdministrador || esSupervisor || esPersonalized || esBodeguero) && tarea" 
+         [tareaId]="tareaParentId"  [vieneDe]="vieneDe"></app-pdf>
+
+<!-- Mantenedor -->
+<!-- <button mat-raised-button color="warn" (click)="IdParentWoToNull()"> IdParentWoToNull </button>
+<button mat-raised-button color="warn" (click)="hasChildrenFalse()"> hasChildrenFalse </button> -->
+
+<!-- Sin tareas hijos -->
+<app-detalle-ot [tareaId]="tareaParentId" [vieneDe]="vieneDe"
+                *ngIf="!tareasChilds || tareasChilds?.length === 0"></app-detalle-ot>
+
+<!-- Con tareas hijos -->
+<mat-tab-group mat-stretch-tabs class="mat-elevation-z4" *ngIf="tarea && tareasChilds?.length !== 0">
+    <mat-tab> 
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">note_alt</mat-icon>
+              {{folioPrincipal}}
+          </ng-template>
+        <app-detalle-ot [tareaId]="tareaParentId" [esChild]="false" 
+                        [vieneDe]="vieneDe"
+                        [tareaParentId]="tareaParentId"></app-detalle-ot>
+    </mat-tab>
+    <mat-tab *ngFor="let tab of tareasChilds; let index = index" [label]="tab">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">description</mat-icon>
+            {{tab.wo_folio}}
+          </ng-template>
+        <app-detalle-ot [tareaId]="tab.id" [esChild]="true"                        
+                        [vieneDe]="vieneDe"
+                        [tareaParentId]="tareaParentId"
+                        *ngIf="tab.id !== undefined"></app-detalle-ot>
+    </mat-tab>
+</mat-tab-group>

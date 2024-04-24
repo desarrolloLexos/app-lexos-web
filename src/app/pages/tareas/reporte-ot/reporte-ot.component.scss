@@ -1,0 +1,87 @@
+@mixin mat-table-columns($columns) {
+    .mat-column- {  
+        @each $colName,
+        $props in $columns {
+            $width: map-get($props, 'width');
+            &#{$colName} {
+                flex: $width;
+                min-width: $width;         
+                @if map-has-key($props, 'color') {
+                    color: map-get($props, 'color');
+                }
+            }
+        }
+    }
+}
+
+
+@include mat-table-columns((
+        wo_folio: (width: 60px),
+        local: (width: 180px),
+        tasks_log_task_type_main: (width: 120px),
+        description: (width: 200px),
+        equipo: (width: 150px),
+        personnel_description: (width: 120px),
+        estado: (width: 120px),
+        hora: (width: 40px),
+        fecha: (width: 80px),
+        tiempo: (width: 60px),
+    ));
+
+mat-header-cell,
+mat-cell {
+    margin-left: 4px;
+}
+
+mat-form-field {
+    // min-width: 250px;
+    margin: 4px 10px;
+}
+
+span.por-revisar {
+    background-color: blue;
+    color: white;
+    border-radius: 6px;
+    border: 1px solid gray;
+    font-size: smaller;
+    padding: 2px 6px;
+    width: 75px;
+    text-align: center;
+    margin-right: 2px;
+}
+
+span.t-asignado {
+    background-color: rgb(253, 240, 54);
+    color: rgb(196, 53, 53);
+    border-radius: 6px;
+    border: 1px solid gray;
+    font-size: smaller;
+    padding: 2px 6px;
+    width: 75px;
+    text-align: center;
+    margin-right: 2px;
+}
+
+span.finalizada {
+    background-color: rgb(61 209 39);
+    color: white;
+    border-radius: 6px;
+    border: 1px solid gray;
+    font-size: smaller;
+    padding: 2px 6px;
+    width: 75px;
+    text-align: center;
+    margin-right: 2px;
+}
+
+span.por-asignar {
+    background-color: rgb(255 183 0);
+    color: rgb(126 23 23);
+    border-radius: 6px;
+    border: 1px solid gray;
+    font-size: smaller;
+    padding: 2px 6px;
+    width: 75px;
+    text-align: center;
+    margin-right: 2px;
+}

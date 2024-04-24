@@ -1,0 +1,31 @@
+.user-form{
+    .form-field-outer{
+        min-width: 280px;
+    }
+    .mat-radio-button{
+        margin-right: 12px;
+    }
+}
+
+.example-stretched-tabs {
+    max-width: 800px;
+    min-width: 400px;
+    padding: 20px;
+  }
+
+.imagePreview {
+    width: 350px;
+    height: 400px;
+}
+
+.mat-tab {
+    height: 600px;
+}
+
+.vertical-tabs.mat-tab-group .mat-tab-body-wrapper {
+    padding: 0 !important;
+}
+
+.mat-tab-label {
+    background-color: antiquewhite;
+}

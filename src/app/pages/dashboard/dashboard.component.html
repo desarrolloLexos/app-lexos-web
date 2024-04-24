@@ -1,0 +1,51 @@
+<app-content-header icon="dashboard" desc="¡Bienvenido a su Dasboard!" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'py-3'"></app-content-header>
+
+<div class="p-2">
+    <app-tiles></app-tiles>
+    <app-info-cards></app-info-cards>
+    <app-disk-space></app-disk-space>
+
+    <div fxLayout="row wrap">
+        <div fxFlex="100" fxFlex.gt-sm="70" class="p-2">
+            <app-analytics></app-analytics>
+        </div>
+        <div fxFlex="100" fxFlex.gt-sm="30" fxLayout="column">
+            <div fxFlex="100" class="p-2">
+                <mat-card class="secondary-text-color p-4">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+                        <h2>{{ot_smu_mes_actual}}</h2>
+                        <p class="text-truncate mx-1">SMU S.A</p>
+                    </div>
+                    <mat-progress-bar mode="determinate" [value]="ot_smu_diferencia" 
+                        [color]="ot_smu_mes_porcentual.indexOf('menos que') !== -1?'warn':'primary'"></mat-progress-bar>
+                    <p class="mt-3 text-truncate">{{ot_smu_mes_porcentual}}</p>
+                </mat-card>
+            </div>
+            <div fxFlex="100" class="p-2">
+                <mat-card class="secondary-text-color p-4">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+                        <h2>{{ot_wallmart_mes_actual}}</h2>
+                        <p class="text-truncate mx-1">Walmart Chile S.A</p>
+                    </div>
+                    <mat-progress-bar mode="determinate" [value]="ot_wallmart_diferencia"
+                        [color]="ot_wallmart_mes_porcentual.indexOf('menos que') !== -1?'warn':'primary'"></mat-progress-bar>
+                    <p class="mt-3 text-truncate">{{ot_wallmart_mes_porcentual}}</p>
+                </mat-card>
+            </div>
+            <div fxFlex="100" class="p-2">
+                <mat-card class="secondary-text-color p-4">
+                    <div fxLayout="row" fxLayoutAlign="space-between center" class="">
+                        <h2>{{ot_total_mes_actual}}</h2>
+                        <p class="text-truncate mx-1">Total OT del mes</p>
+                    </div>
+                    <mat-progress-bar mode="determinate" [value]="ot_total_diferencia" 
+                        [color]="ot_total_mes_porcentual.indexOf('menos que') !== -1?'warn':'primary'"></mat-progress-bar>
+                    <p class="mt-3 text-truncate">{{ot_total_mes_porcentual}}</p>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+
+    <!-- <app-team></app-team> -->
+
+</div>

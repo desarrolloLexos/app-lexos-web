@@ -1,0 +1,11 @@
+$teal-light-primary: mat.define-palette(mat.$teal-palette, 700, 50, 800);
+$teal-light-accent: mat.define-palette(mat.$deep-orange-palette, 600, A400, 900);
+$teal-light-warn: mat.define-palette(mat.$red-palette, 600);
+
+$teal-light-theme: mat.define-light-theme((
+    color: (
+        primary: $teal-light-primary,
+        accent: $teal-light-accent,
+        warn: $teal-light-warn,
+    )
+));

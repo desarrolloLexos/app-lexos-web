@@ -1,0 +1,104 @@
+<h2 mat-dialog-title>{{ data.titulo }}</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <!-- data -->
+    <ng-container matColumnDef="wo_folio">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Folio OT</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.wo_folio}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="tasks_log_task_type_main">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de tarea </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.tasks_log_task_type_main}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="id_status_work_order">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Estado </mat-header-cell>
+        <mat-cell [class]="element.id_status_work_order===7?'bg-warn p-1':
+                            element.id_status_work_order===8?'bg-primary p-1':
+                            element.id_status_work_order===3?'bg-finaly p-1':
+                            element.id_status_work_order===9?'bg-danger p-1':
+                            element.id_status_work_order===6?'bg-yellow p-1':''"
+            *matCellDef="let element" [ngSwitch]="element.id_status_work_order">
+            <span *ngSwitchCase="1">En Proceso</span>
+            <span *ngSwitchCase="2">En Revisión</span>
+            <span *ngSwitchCase="3">Finalizada</span>
+            <span *ngSwitchCase="4">Cancelado</span>
+            <span *ngSwitchCase="5">Pendiente</span>
+            <span *ngSwitchCase="6">Técnico asignado</span>
+            <span *ngSwitchCase="7">Por asignar técnico</span>
+            <span *ngSwitchCase="8">Por revisar</span>
+            <span *ngSwitchCase="9">Anulada</span>
+            <span *ngSwitchDefault="">{{element.id_status_work_order}}</span>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="personnel_description">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Responsable </mat-header-cell>
+        <mat-cell *matCellDef="let element" style="margin-left: 4px"> {{element.personnel_description}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="local">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Local </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.local}} </mat-cell>
+    </ng-container>               
+    <ng-container matColumnDef="items_log_description">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Activo </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            {{(element.items_log_description?.length > 55)? (element.items_log_description?.slice(0, 55) +
+            '...') : element.items_log_description}}
+        </mat-cell>
+    </ng-container>  
+    <ng-container matColumnDef="description">
+        <mat-header-cell *matHeaderCellDef> Tarea </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{(element.description.length > 300)?
+            (element.description.slice(0, 300) + '...') : element.description}} </mat-cell>
+    </ng-container>   
+    <ng-container matColumnDef="real_duration">
+        <mat-header-cell *matHeaderCellDef> Tiempo de Ejecución </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{realDuration(element.initial_date, element.final_date)}} hrs.</mat-cell>
+    </ng-container>    
+    <ng-container matColumnDef="cal_date_maintenance">
+        <mat-header-cell *matHeaderCellDef> Fecha y hora solicitud </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.cal_date_maintenance | date:"yyyy-MM-dd HH:mm"}}
+        </mat-cell>
+    </ng-container>   
+    <ng-container matColumnDef="initial_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Inicio </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.initial_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="final_date">
+        <mat-header-cell *matHeaderCellDef> Fecha Término </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.final_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+    </ng-container>    
+    <ng-container matColumnDef="wo_final_date">
+        <mat-header-cell *matHeaderCellDef> Fecha de cierre OT </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.wo_final_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+    </ng-container>    
+    <ng-container matColumnDef="requested_by">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Creada por </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.requested_by}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="priorities_description">
+        <mat-header-cell *matHeaderCellDef> Tarea -> Prioridad </mat-header-cell>
+        <mat-cell *matCellDef="let element" [ngSwitch]="element.priorities_description">
+            <span *ngSwitchCase="'VERY_HIGH'">Muy Alta</span>
+            <span *ngSwitchCase="'MEDIUM'">Media</span>
+            <span *ngSwitchCase="'HIGH'">Alta</span>
+            <span *ngSwitchDefault>{{ element.priorities_description ? element.priorities_description :
+                'N/A' }}</span>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="getRecord(row)"></mat-row>
+     <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+    </tr>
+</mat-table>
+
+<mat-paginator [pageSizeOptions]="[20, 50, 100]"
+                showFirstLastButtons
+                aria-label="Select page of periodic elements">
+</mat-paginator> 
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

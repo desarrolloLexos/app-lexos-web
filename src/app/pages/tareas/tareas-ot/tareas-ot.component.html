@@ -1,0 +1,383 @@
+<app-content-header #tableHeader 
+    [icon]="'library_books'" 
+    [title]="'Órdenes de Trabajo'"     
+    [hideBreadcrumb]="false"
+    [hasBgImage]="true" [class]="'pb-4'"></app-content-header>
+
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+        <div fxLayout="row">          
+            <button mat-icon-button [matMenuTriggerFor]="filterMenu" #filterMenuTrigger="matMenuTrigger">
+                <mat-icon>filter_list</mat-icon>
+            </button>
+            <mat-menu #filterMenu="matMenu">
+                <mat-accordion class="example-headers-align">          
+                    <mat-expansion-panel (click)="$event.stopPropagation();">
+                    <!-- <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true"> -->
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>Filtrar por campo</mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Cliente" [(ngModel)]="cliente"
+                                        (selectionChange)="onChangeCliente($event)">
+                                <mat-option *ngFor="let item of clients" [value]="item.cliente">
+                                    {{ item.cliente }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Local"  [disableOptionCentering]="true" #select1 
+                                        [(ngModel)]="local" (selectionChange)="onChangeLocal($event)">
+                            <mat-select-filter  *ngIf="select1.focused"   [array]="locals" [color]="'rgb(236, 241, 255)'"
+                                                [displayMember]="'nombre'" [placeholder]="'Buscar...'"
+                                                (filteredReturn)="filteredLocals = $event"></mat-select-filter>
+                            <mat-option *ngFor="let item of filteredLocals" [value]="item.nombre">
+                                {{item.nombre}}
+                            </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Responsable" [(ngModel)]="idResponsable"
+                                        (selectionChange)="onChangeUser($event)">
+                                <mat-option *ngFor="let user of users" [value]="user">
+                                    {{ user.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Tipo de servicio"  [(ngModel)]="servicio"
+                                        (selectionChange)="onChangeServicio($event.value)">
+                                <mat-option *ngFor="let tipo of tipoServicio" [value]="tipo.value" >
+                                    {{tipo.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-select placeholder="Estado"  [(ngModel)]="estado"
+                                        (selectionChange)="onChangeEstado($event.value)">
+                                <mat-option *ngFor="let tipo of opcionesEstado" [value]="tipo" >
+                                    {{tipo.viewValue}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-expansion-panel>
+                    <mat-expansion-panel (click)="$event.stopPropagation();">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>Filtro por fecha</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Rango</mat-label>
+                            <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                              <input matStartDate formControlName="start" placeholder="Start date" (dateChange)="onChangeRange($event)">
+                              <input matEndDate formControlName="end" placeholder="End date" (dateChange)="onChangeRange($event)">
+                            </mat-date-range-input>
+                            <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-date-range-picker #picker></mat-date-range-picker>
+                          
+                            <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+                            <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+                          </mat-form-field>
+                    </mat-expansion-panel>
+                </mat-accordion>     
+            </mat-menu>
+            <button mat-icon-button (click)="showSearch = !showSearch">
+                <mat-icon>search</mat-icon>
+            </button>
+        </div>
+        <form class="mail-search" [class.show]="showSearch">
+            <mat-form-field class="mail-search-input">
+                <!-- <input matInput placeholder="Search mail..." [(ngModel)]="searchText" name="search"> -->
+                <input matInput (keyup)="applyFilter($event.target.value)"
+                        placeholder="Escriba palabra a buscar en esta tabla">
+            </mat-form-field>
+        </form>
+        <!-- <div fxLayout="row" fxLayoutAlign="center center">     
+            <button mat-raised-button color="accent" matTooltip="Exportar a Excel" fxShow="false" fxShow.gt-xs>
+                Exportar <i class="fas fa-file-excel"></i>
+            </button>
+        </div> -->
+
+        <mat-form-field class="example-chip-list">
+            <mat-chip-list #chipList aria-label="Video keywords" multiple [formControl]="formControl">
+                <mat-chip
+                    *ngFor="let filtro of filtros"
+                    [selected]="filtro"
+                    [value]="filtro.value"
+                    (removed)="removeKeyword(filtro.value)">
+                {{filtro.viewValue}}
+                  <button matChipRemove [attr.aria-label]="'quitar ' + filtro.value">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>                              
+            </mat-chip-list>
+        </mat-form-field> 
+
+        <div fxLayout="row" fxLayoutAlign="center center">     
+            <button mat-raised-button color="accent" matTooltip="Actualizar listado" 
+                    fxShow="false" fxShow.gt-xs (click)="refresh()">
+                Refresh <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar>
+
+    
+    
+<section class="mat-elevation-z8 example-container" tabindex="0" infiniteScroll (scrolled)="onScroll()"
+    [scrollWindow]="false">
+    <div fxLayout="column" class="p-2">
+        <div class="p-2 bloqsearch">           
+            <div *ngIf="showCombinar()">
+                <button mat-raised-button color="primary" class="btn-combinar"
+                        (click)="openDialog()">Combinar 
+                    <mat-icon>merge_type</mat-icon>
+                </button>
+            </div>
+            <div *ngIf="showAnular()">
+                <button mat-raised-button color="warn" class="btn-anular"
+                        (click)="anularOT()">Anular 
+                    <mat-icon>merge_type</mat-icon>
+                </button>
+            </div>
+
+            <div class="spinner-table" *ngIf="loading">
+                <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
+            </div>
+
+            <mat-table #table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                        <th mat-header-cell *matHeaderCellDef>
+                            <!-- <mat-checkbox class="mx-2" (change)="$event ? masterToggle() : null" 
+                                          [checked]="selection.hasValue() && isAllSelected()" 
+                                          [indeterminate]="selection.hasValue() && !isAllSelected()" 
+                                          [aria-label]="checkboxLabel()">
+                            </mat-checkbox> -->
+                        </th>
+                        <td mat-cell *matCellDef="let row">
+                            <mat-checkbox class="mx-2" *ngIf="row.id_status_work_order !== 3 
+                                                           && row.id_status_work_order !== 9"
+                                          (click)="$event.stopPropagation()" 
+                                          (change)="$event ? selection.toggle(row) : null" 
+                                          [checked]="selection.isSelected(row)" 
+                                          [aria-label]="checkboxLabel(row)">
+                            </mat-checkbox>
+                        </td>
+                    </ng-container>
+                <!-- data -->
+                <ng-container matColumnDef="wo_folio">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Folio OT</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.wo_folio}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="tasks_log_task_type_main">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de tarea </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.tasks_log_task_type_main}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="id_status_work_order">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Estado </mat-header-cell>
+                    <mat-cell [class]="element.id_status_work_order===7?'bg-warn p-1':
+                                        element.id_status_work_order===8?'bg-primary p-1':
+                                        element.id_status_work_order===3?'bg-finaly p-1':
+                                        element.id_status_work_order===9?'bg-danger p-1':
+                                        element.id_status_work_order===6?'bg-yellow p-1':''"
+                        *matCellDef="let element" [ngSwitch]="element.id_status_work_order">
+                        <span *ngSwitchCase="1">En Proceso</span>
+                        <span *ngSwitchCase="2">En Revisión</span>
+                        <span *ngSwitchCase="3">Finalizada</span>
+                        <span *ngSwitchCase="4">Cancelado</span>
+                        <span *ngSwitchCase="5">Pendiente</span>
+                        <span *ngSwitchCase="6">Técnico asignado</span>
+                        <span *ngSwitchCase="7">Por asignar técnico</span>
+                        <span *ngSwitchCase="8">Por revisar</span>
+                        <span *ngSwitchCase="9">Anulada</span>
+                        <span *ngSwitchDefault="">{{element.id_status_work_order}}</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="personnel_description">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Responsable </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="margin-left: 4px"> {{element.personnel_description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="local">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Local </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.local}} </mat-cell>
+                </ng-container>               
+                <ng-container matColumnDef="items_log_description">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Activo </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        {{(element.items_log_description?.length > 55)? (element.items_log_description?.slice(0, 55) +
+                        '...') : element.items_log_description}}
+                    </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="code">
+                    <mat-header-cell *matHeaderCellDef> Código </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.code}} </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="is_offline">
+                    <mat-header-cell *matHeaderCellDef> Fuera de servicio </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{(element.is_offline)?element.is_offline:'No'}} </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef> Tarea </mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{(element.description.length > 300)?
+                        (element.description.slice(0, 300) + '...') : element.description}} </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="trigger_description">
+                    <mat-header-cell *matHeaderCellDef> Activador </mat-header-cell>
+                    <mat-cell *matCellDef="let element" [ngSwitch]="element.trigger_description">
+                        <span *ngSwitchCase="'NO_SCHEDULE_TASK'">Tarea no Programada</span>
+                        <span *ngSwitchCase="'DATE$EVERY$1$DAYS'">Fecha Cada 1 Dia(s)</span>
+                        <span *ngSwitchDefault>N/A</span>
+                    </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="parent_description">
+                    <mat-header-cell *matHeaderCellDef> Ubicado en ó es Parte de </mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{(element.parent_description?.length > 55)?
+                        (element.parent_description?.slice(0, 55) + '...') : element.parent_description}} </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="items_log_types_description">
+                    <mat-header-cell *matHeaderCellDef> Tipo de Activo </mat-header-cell>
+                    <mat-cell *matCellDef="let element" [ngSwitch]="element.items_log_types_description">
+                        <span *ngSwitchCase="'FACILITIES'">Ubicaciones</span>
+                        <span *ngSwitchCase="'EQUIPMENTS'">Equipos</span>
+                        <span *ngSwitchCase="'TOOLS'">Herramientas</span>
+                        <span *ngSwitchDefault>{{ element.items_log_types_description }}</span>
+                    </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="groups_1_description">
+                    <mat-header-cell *matHeaderCellDef> Activo Clasificación 1 </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.groups_1_description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="groups_2_description">
+                    <mat-header-cell *matHeaderCellDef> Activo Clasificación 2 </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.groups_2_description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="completed_percentage">
+                    <mat-header-cell *matHeaderCellDef> Completado </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.completed_percentage}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="duration">
+                    <mat-header-cell *matHeaderCellDef> Duración estimada </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.duration}} </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="real_duration">
+                    <mat-header-cell *matHeaderCellDef> Tiempo de Ejecución </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{realDuration(element.initial_date, element.final_date)}} hrs.</mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="num_iterations">
+                    <mat-header-cell *matHeaderCellDef> Iteraciones </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.num_iterations}} </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="cal_date_maintenance">
+                    <mat-header-cell *matHeaderCellDef> Fecha y hora solicitud </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.cal_date_maintenance | date:"yyyy-MM-dd HH:mm"}}
+                    </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="date_maintenance">
+                    <mat-header-cell *matHeaderCellDef> Fecha Programada </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.date_maintenance | date:"yyyy-MM-dd HH:mm"}}
+                    </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="initial_date">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Inicio </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.initial_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="final_date">
+                    <mat-header-cell *matHeaderCellDef> Fecha Término </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.final_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="creation_date">
+                    <mat-header-cell *matHeaderCellDef> Fecha de creación OT </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.creation_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="wo_final_date">
+                    <mat-header-cell *matHeaderCellDef> Fecha de cierre OT </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.wo_final_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="stop_assets">
+                    <mat-header-cell *matHeaderCellDef> ¿Paro de equipo? </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.stop_assets}} </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="stop_assets_sec">
+                    <mat-header-cell *matHeaderCellDef> Tiempo de paro por Mantenimiento planificado </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.stop_assets_sec}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="real_stop_assets_sec">
+                    <mat-header-cell *matHeaderCellDef> Horas Totales </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.real_stop_assets_sec}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="resources_hours">
+                    <mat-header-cell *matHeaderCellDef> Recursos Humanos </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.resources_hours}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="resources_inventory">
+                    <mat-header-cell *matHeaderCellDef> Repuestos y Suministros </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.resources_inventory}} </mat-cell>
+                </ng-container> -->
+                <!-- <ng-container matColumnDef="id_parent">
+                    <mat-header-cell *matHeaderCellDef> Orden de trabajo Padre </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id_parent}} </mat-cell>
+                </ng-container> -->
+                <ng-container matColumnDef="requested_by">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Creada por </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.requested_by}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="priorities_description">
+                    <mat-header-cell *matHeaderCellDef> Tarea -> Prioridad </mat-header-cell>
+                    <mat-cell *matCellDef="let element" [ngSwitch]="element.priorities_description">
+                        <span *ngSwitchCase="'VERY_HIGH'">Muy Alta</span>
+                        <span *ngSwitchCase="'MEDIUM'">Media</span>
+                        <span *ngSwitchCase="'HIGH'">Alta</span>
+                        <span *ngSwitchDefault>{{ element.priorities_description ? element.priorities_description :
+                            'N/A' }}</span>
+                    </mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="task_note">
+                    <mat-header-cell *matHeaderCellDef> Tarea -> Nota </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.task_note}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="note">
+                    <mat-header-cell *matHeaderCellDef> Orden de Trabajo -> Nota </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.note}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="event_date">
+                    <mat-header-cell *matHeaderCellDef> Fecha del incidente </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.event_date | date:"yyyy-MM-dd HH:mm"}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="rating">
+                    <mat-header-cell *matHeaderCellDef> Calificación de OTs </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.rating}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="id_request">
+                    <mat-header-cell *matHeaderCellDef> Número de Solicitud </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id_request}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="work_orders_status_custom_description">
+                    <mat-header-cell *matHeaderCellDef> Motivo de cancelación </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.work_orders_status_custom_description}} </mat-cell>
+                </ng-container> -->
+
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="getRecord(row)"></mat-row>
+                 <!-- Row shown when there is no matching data. -->
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                </tr>
+            </mat-table>
+            
+            <mat-paginator [pageSizeOptions]="[20, 50, 100]"
+                            showFirstLastButtons
+                            aria-label="Select page of periodic elements">
+            </mat-paginator>            
+
+
+            <!-- <div #backToTop fxLayout="row" fxLayoutAlign="center center" class="back-to-top" (click)="scrollToTop()">
+                    <mat-icon>arrow_upward</mat-icon>
+                </div> -->
+        </div>
+    </div>
+</section>

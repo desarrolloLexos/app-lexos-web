@@ -1,0 +1,95 @@
+<app-content-header     
+    [title]="'Status Órdenes de Trabajo'" 
+    [hideBreadcrumb]="false"
+    [hasBgImage]="true" 
+    [class]="'pb-4'"></app-content-header>
+
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="px-2 mailbox-toolbar">
+        <div fxLayout="row">          
+            <button mat-icon-button [matMenuTriggerFor]="filterMenu" #filterMenuTrigger="matMenuTrigger">
+                <mat-icon>filter_list</mat-icon>
+            </button>
+            <mat-menu #filterMenu="matMenu">               
+                    <mat-expansion-panel (click)="$event.stopPropagation();">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>Filtrar por campo</mat-panel-title>
+                        </mat-expansion-panel-header>                    
+                        <mat-form-field class="example-chip-list">
+                            <mat-chip-list #chipList aria-label="Video keywords" multiple [formControl]="formControl">
+                              <mat-chip
+                                  *ngFor="let keyword of keywords"
+                                  [selected]="keyword"
+                                  [value]="keyword"
+                                  (removed)="removeKeyword(keyword)">
+                                {{keyword}}
+                              </mat-chip>
+                              <input
+                                placeholder="Ingresar campo"
+                                [matChipInputFor]="chipList"
+                                (matChipInputTokenEnd)="addKeywordFromInput($event)">
+                            </mat-chip-list>
+                        </mat-form-field>
+                        <mat-divider></mat-divider>
+                        <mat-label class="label-sug">Campos sugeridos</mat-label> 
+                        <mat-chip-list aria-label="Fish selection">
+                            <mat-basic-chip>folio</mat-basic-chip>
+                            <mat-basic-chip>tipo_tarea</mat-basic-chip>
+                            <mat-basic-chip>estado</mat-basic-chip>
+                            <mat-basic-chip>responsable</mat-basic-chip>
+                            <mat-basic-chip>cliente</mat-basic-chip>
+                            <mat-basic-chip>local</mat-basic-chip>
+                            <mat-basic-chip>activo</mat-basic-chip>
+                            <mat-basic-chip>fecha_inicio</mat-basic-chip>
+                            <mat-basic-chip>fecha_termino</mat-basic-chip>
+                            <mat-basic-chip>fecha_creacion</mat-basic-chip>
+                            <mat-basic-chip>fecha_cierre</mat-basic-chip>
+                            <mat-basic-chip>autor</mat-basic-chip>                            
+                          </mat-chip-list>
+                    </mat-expansion-panel>           
+                
+            </mat-menu>
+            <button mat-icon-button (click)="showSearch = !showSearch">
+                <mat-icon>search</mat-icon>
+            </button>
+        </div>
+        <form class="mail-search" [class.show]="showSearch">
+            <mat-form-field class="mail-search-input">
+                <input matInput placeholder="Search mail..." [(ngModel)]="searchText" name="search">
+            </mat-form-field>
+        </form>
+        <div fxLayout="row" fxLayoutAlign="center center">     
+            <button mat-raised-button color="accent" matTooltip="Exportar a Excel" fxShow="false" fxShow.gt-xs>
+                Exportar <i class="fas fa-file-excel"></i>
+            </button>
+        </div>
+    </mat-toolbar>
+
+    <div fxLayout="column" class="p-2">
+        <div class="p-2">
+            <mat-card>
+                <mat-card-header fxLayoutAlign="center">                
+                    <mat-card-subtitle><h2>Basic Inputs</h2></mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <!-- Mantenedor -->
+                    <!-- <button mat-raised-button color="warn" (click)="IdParentWoToNull()"> IdParentWoToNull </button>
+                    <button mat-raised-button color="warn" (click)="hasChildrenFalse()"> hasChildrenFalse </button> -->
+
+
+                    
+
+
+                    <form fxLayout="column" fxLayoutAlign="center">
+                        <mat-form-field>
+                            <input matInput placeholder="Favorite food" value="Sushi">
+                        </mat-form-field>
+                        <mat-form-field>
+                            <textarea matInput placeholder="Leave a comment"></textarea>
+                        </mat-form-field>
+                    </form>                   
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+    <button mat-raised-button color="warn" (click)="changeStatePendientePorRevisarWhenExistsHourFinal()"> Execute </button>
