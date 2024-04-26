@@ -34,7 +34,14 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #submenu="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="estados">
+          <button *ngIf="!permission" mat-menu-item>
+            No tienes permisos para modificar
+          </button>
+          <button
+            *ngIf="permission"
+            mat-menu-item
+            [matMenuTriggerFor]="estados"
+          >
             Cambiar estado de Ot
           </button>
           <!-- <button mat-menu-item [matMenuTriggerFor]="invertebrates">

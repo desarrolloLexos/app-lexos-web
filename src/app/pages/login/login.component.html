@@ -1,33 +1,91 @@
-<mat-sidenav-container class="h-100" style="background: url(/assets/img/app/rascacielos_grande.jpg)">
-    <div fxLayout="row" fxLayoutAlign="center center" class="h-100">
-        <form [formGroup]="form" (ngSubmit)="loginUsuario()" fxFlex="90" fxFlex.gt-sm="30" fxFlex.sm="60" class="mat-elevation-z6">
-            <app-content-header [icon]="'exit_to_app'" [title]="'Iniciar sesión'" [hideBreadcrumb]="true" [hasBgImage]="true" [class]="'py-4'"></app-content-header>
-            <div class="p-3">
-                <mat-form-field class="w-100">
-                    <mat-icon matPrefix class="mat-icon-sm mb-2 mr-2 secondary-text-color">mail</mat-icon>
-                    <input matInput placeholder="Email" formControlName="email">
-                    <mat-error *ngIf="form.controls.email.errors?.required">Email es requerido</mat-error>
-                    <mat-error *ngIf="form.controls.email.hasError('invalidEmail')">Email inválido.</mat-error>
-                </mat-form-field>
-                <mat-form-field class="w-100">
-                    <mat-icon matPrefix class="mat-icon-sm mb-2 mr-2 secondary-text-color">lock</mat-icon>
-                    <input matInput placeholder="Contraseña" [type]="hide ? 'password' : 'text'" formControlName="password" required>
-                    <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    <mat-error *ngIf="form.controls.password.errors?.required">Ingrese su contraseña</mat-error>
-                    <mat-error *ngIf="form.controls.password.hasError('minlength')">Debe contener al menos seis caracteres.</mat-error>
-                </mat-form-field>
-                <!-- <mat-slide-toggle formControlName="rememberMe" class="my-2">Manter sesión iniciada.</mat-slide-toggle> -->
-                <button mat-raised-button color="primary" class="mat-elevation-z6 w-100 mt-3" type="submit" [disabled]="form.invalid" *ngIf="!cargando && !identificado">
-                  INGRESAR
-                </button>
-                <button mat-raised-button color="accent" class="mat-elevation-z6 w-100 mt-3" type="button" (click)="acceder()" [disabled]="form.invalid" *ngIf="!cargando && identificado">
-                    IR
-                  </button>
-                <button mat-raised-button color="primary" class="mat-elevation-z6 w-100 mt-3" type="button" [disabled]="true" *ngIf="cargando">
-                  <em class="fas fa-sync fa-spin"></em>
-                  Espere...
-                </button>
-            </div>
-        </form>
-    </div>
+<mat-sidenav-container
+  class="h-100"
+  style="background: url(/assets/img/app/rascacielos_grande.jpg)"
+>
+  <div fxLayout="row" fxLayoutAlign="center center" class="h-100">
+    <form
+      [formGroup]="form"
+      (ngSubmit)="loginUsuario()"
+      fxFlex="90"
+      fxFlex.gt-sm="30"
+      fxFlex.sm="60"
+      class="mat-elevation-z6"
+    >
+      <app-content-header
+        [icon]="'exit_to_app'"
+        [title]="'Iniciar sesión'"
+        [hideBreadcrumb]="true"
+        [hasBgImage]="true"
+        [class]="'py-4'"
+      ></app-content-header>
+      <div class="p-3">
+        <mat-form-field class="w-100">
+          <mat-icon matPrefix class="mat-icon-sm mb-2 mr-2 secondary-text-color"
+            >mail</mat-icon
+          >
+          <input matInput placeholder="Email" formControlName="email" />
+          <mat-error *ngIf="form.controls.email.errors?.required"
+            >Email es requerido</mat-error
+          >
+          <mat-error *ngIf="form.controls.email.hasError('invalidEmail')"
+            >Email inválido.</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field class="w-100">
+          <mat-icon matPrefix class="mat-icon-sm mb-2 mr-2 secondary-text-color"
+            >lock</mat-icon
+          >
+          <input
+            matInput
+            placeholder="Contraseña"
+            [type]="hide ? 'password' : 'text'"
+            formControlName="password"
+            required
+          />
+          <mat-icon matSuffix (click)="hide = !hide">{{
+            hide ? "visibility_off" : "visibility"
+          }}</mat-icon>
+          <mat-error *ngIf="form.controls.password.errors?.required"
+            >Ingrese su contraseña</mat-error
+          >
+          <mat-error *ngIf="form.controls.password.hasError('minlength')"
+            >Debe contener al menos seis caracteres.</mat-error
+          >
+        </mat-form-field>
+        <!-- <mat-slide-toggle formControlName="rememberMe" class="my-2">Manter sesión iniciada.</mat-slide-toggle> -->
+        <button
+          mat-raised-button
+          color="primary"
+          class="mat-elevation-z6 w-100 mt-3"
+          type="submit"
+          [disabled]="form.invalid"
+          *ngIf="!cargando && !identificado"
+        >
+          INGRESAR
+        </button>
+        <button
+          mat-raised-button
+          color="accent"
+          class="mat-elevation-z6 w-100 mt-3"
+          type="button"
+          (click)="acceder()"
+          [disabled]="form.invalid"
+          *ngIf="!cargando && identificado"
+        >
+          IR
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="mat-elevation-z6 w-100 mt-3"
+          type="button"
+          [disabled]="true"
+          *ngIf="cargando"
+        >
+          <em class="fas fa-sync fa-spin"></em>
+          Espere...
+        </button>
+      </div>
+    </form>
+  </div>
 </mat-sidenav-container>

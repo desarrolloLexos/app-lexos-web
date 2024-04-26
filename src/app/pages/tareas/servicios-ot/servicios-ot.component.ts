@@ -18,7 +18,7 @@ export class ServiciosOtComponent implements OnInit {
   error: any;
   loaded: boolean = false;
   loading: boolean = true;
-  permission: string = "";
+  permission: boolean = true;
   constructor(
     private store: Store<AppState>,
     private authService: AuthService,
@@ -56,7 +56,7 @@ export class ServiciosOtComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.permission = localStorage.getItem("permission");
+    this.permission = localStorage.getItem("permission") === "Administrator";
     this.loading = true;
     this.reloadTable();
     this.loading = false;

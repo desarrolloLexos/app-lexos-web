@@ -463,7 +463,7 @@ export class TareasService {
       where("creation_date", ">=", fechaDesde),
       where("creation_date", "<=", fechaHasta),
       orderBy("creation_date", "desc")
-      // limit(2000)
+      //limit(100) //TODO: remover esto
     );
 
     return (await getDocs(q)).docs.map((o) => o.data());
