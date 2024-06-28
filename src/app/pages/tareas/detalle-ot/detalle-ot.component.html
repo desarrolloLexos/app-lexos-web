@@ -1,742 +1,1301 @@
 <div fxLayout="column" fxLayoutAlign="none" id="top-main" class="top-main">
-    <div class="spinner-form" *ngIf="cargando">
-        <mat-progress-spinner [mode]="'indeterminate'" [diameter]="50"></mat-progress-spinner>
-    </div> 
-        <mat-stepper orientation="vertical" linear="true" #stepper
-                      (selectionChange)="selectionChangedStepper($event)"
-                      id="main-stepper"  perfectScrollbar>
-            <mat-step  [stepControl]="formTareaOT" errorMessage="Falta completar datos de la solicitud."> <!-- Encabezado OT -->               
-                <form [formGroup]="formTareaOT" (ngSubmit)="onSubmit('encabezado')" id="formTarea">
-                    <ng-template matStepLabel>Datos generales de la solicitud</ng-template>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Cliente</mat-label>
-                        <ngx-mat-combobox [fillInput]="fillInput" autocomplete [autocompleteMinChars]="autocompleteMinChars"
-                            [autocompleteDebounceInterval]="autocompleteDebounceInterval" formControlName="cliente" noWrap="true"
-                            [options]="clientes" [placeholder]="placeholder" valueAccessor="cliente" labelAccessor="cliente"
-                            [filterOptionsFn]="filterOptionsFn('cliente')" (selectionChange)="onClienteSelectionChange($event)"
-                            required
-                            >
-                        </ngx-mat-combobox>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Local</mat-label>
-                        <ngx-mat-combobox 
-                            [fillInput]="fillInput" 
-                            autocomplete 
-                            [autocompleteMinChars]="autocompleteMinChars"
-                            [autocompleteDebounceInterval]="autocompleteDebounceInterval" 
-                            formControlName="local"
-                            [options]="locales" 
-                            [placeholder]="placeholder" 
-                            valueAccessor="nombre" 
-                            labelAccessor="nombre"
-                            [filterOptionsFn]="filterOptionsFn('nombre')" (selectionChange)="onLocalSelectionChange($event)"
-                            id="cbxLocal"
-                            required 
-                        >
-                            <ng-template ngxMatComboboxFooter *ngIf="esAdministrador">
-                                <div fxLayout="column" fxLayoutAlign="center start" class="nueva-opcion">
-                                    <button mat-stroked-button color="primary" (click)="openDialogRegistrarOpcion('local')">Crear nueva opción
-                                        <mat-icon>add_circle_outline</mat-icon>
-                                    </button> 
-                                </div>
-                            </ng-template>
-                        </ngx-mat-combobox>
-                        <mat-error *ngIf="formTareaOT.get('local').invalid">Campo obligatorio</mat-error>  
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Fecha y Hora de Solicitud de Servicio</mat-label>
-                        <input matInput [ngxMatDatetimePicker]="picker"
-                               formControlName="fechaSolicitudServicio"
-                                placeholder="Fecha y Hora de Solicitud de Servicio">
-                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                        <ngx-mat-datetime-picker #picker>
-                        <ng-template>
-                          <span>OK</span>
-                        </ng-template>
-                      </ngx-mat-datetime-picker>
-                    </mat-form-field>                    
-                    <mat-form-field appearance="outline">
-                        <mat-label>Tipo de servicio</mat-label>
-                        <mat-select placeholder="Tipo de servicio" 
-                                    (selectionChange)="onTipoServicioSelectionChange($event.value)"
-                                    formControlName="servicio" name="servicio" required>
-                            <mat-option *ngFor="let tipo of tipoServicio" [value]="tipo.value" >
-                                {{tipo.viewValue}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Equipo</mat-label>
-                        <ngx-mat-combobox [fillInput]="fillInput" autocomplete [autocompleteMinChars]="autocompleteMinChars"
-                            [autocompleteDebounceInterval]="autocompleteDebounceInterval" formControlName="equipo"
-                            [options]="equipos" [placeholder]="placeholder" 
-                            valueAccessor="nombre" labelAccessor="nombre"
-                            [filterOptionsFn]="filterOptionsFn('nombre')" required 
-                            >
-                            <ng-template ngxMatComboboxFooter>
-                                <div fxLayout="row" fxLayoutAlign="center start" class="nueva-opcion">
-                                    <button mat-stroked-button color="primary" (click)="openDialogRegistrarOpcion('equipo')">Crear nueva opción
-                                        <mat-icon>add_circle_outline</mat-icon>
-                                    </button>
+  <div class="spinner-form" *ngIf="cargando">
+    <mat-progress-spinner
+      [mode]="'indeterminate'"
+      [diameter]="50"
+    ></mat-progress-spinner>
+  </div>
+  <button mat-flat-button color="primary" (click)="createPDF()">
+    test email
+  </button>
+  <mat-stepper
+    orientation="vertical"
+    linear="true"
+    #stepper
+    (selectionChange)="selectionChangedStepper($event)"
+    id="main-stepper"
+    perfectScrollbar
+  >
+    <mat-step
+      [stepControl]="formTareaOT"
+      errorMessage="Falta completar datos de la solicitud."
+    >
+      <!-- Encabezado OT -->
+      <form
+        [formGroup]="formTareaOT"
+        (ngSubmit)="onSubmit('encabezado')"
+        id="formTarea"
+      >
+        <ng-template matStepLabel>Datos generales de la solicitud</ng-template>
+        <mat-form-field appearance="outline">
+          <mat-label>Cliente</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="cliente"
+            noWrap="true"
+            [options]="clientes"
+            [placeholder]="placeholder"
+            valueAccessor="cliente"
+            labelAccessor="cliente"
+            [filterOptionsFn]="filterOptionsFn('cliente')"
+            (selectionChange)="onClienteSelectionChange($event)"
+            required
+          >
+          </ngx-mat-combobox>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Local</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="local"
+            [options]="locales"
+            [placeholder]="placeholder"
+            valueAccessor="nombre"
+            labelAccessor="nombre"
+            [filterOptionsFn]="filterOptionsFn('nombre')"
+            (selectionChange)="onLocalSelectionChange($event)"
+            id="cbxLocal"
+            required
+          >
+            <ng-template ngxMatComboboxFooter *ngIf="esAdministrador">
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center start"
+                class="nueva-opcion"
+              >
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openDialogRegistrarOpcion('local')"
+                >
+                  Crear nueva opción
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-mat-combobox>
+          <mat-error *ngIf="formTareaOT.get('local').invalid"
+            >Campo obligatorio</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha y Hora de Solicitud de Servicio</mat-label>
+          <input
+            matInput
+            [ngxMatDatetimePicker]="picker"
+            formControlName="fechaSolicitudServicio"
+            placeholder="Fecha y Hora de Solicitud de Servicio"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <ngx-mat-datetime-picker #picker>
+            <ng-template>
+              <span>OK</span>
+            </ng-template>
+          </ngx-mat-datetime-picker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo de servicio</mat-label>
+          <mat-select
+            placeholder="Tipo de servicio"
+            (selectionChange)="onTipoServicioSelectionChange($event.value)"
+            formControlName="servicio"
+            name="servicio"
+            required
+          >
+            <mat-option *ngFor="let tipo of tipoServicio" [value]="tipo.value">
+              {{ tipo.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Equipo</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="equipo"
+            [options]="equipos"
+            [placeholder]="placeholder"
+            valueAccessor="nombre"
+            labelAccessor="nombre"
+            [filterOptionsFn]="filterOptionsFn('nombre')"
+            required
+          >
+            <ng-template ngxMatComboboxFooter>
+              <div
+                fxLayout="row"
+                fxLayoutAlign="center start"
+                class="nueva-opcion"
+              >
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openDialogRegistrarOpcion('equipo')"
+                >
+                  Crear nueva opción
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
 
-                                    <button mat-stroked-button color="primary" *ngIf="!equipos || equipos?.length === 0"
-                                            (click)="recargarListado('equipo')">Recargar listado
-                                        <mat-icon>cloud_sync</mat-icon>
-                                    </button>
-                                </div>                               
-                            </ng-template>
-                        </ngx-mat-combobox>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Prioridad</mat-label>
-                        <mat-select placeholder="Prioridad" formControlName="prioridad" name="prioridad" required>
-                            <mat-option *ngFor="let prioridad of tipoPrioridad" [value]="prioridad.value">
-                                {{prioridad.viewValue}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>OT Generada por</mat-label>
-                        <input matInput placeholder="OT Generada por" formControlName="autor" name="autor">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Técnico Ejecutante de Servicio</mat-label>
-                        <ngx-mat-combobox [fillInput]="fillInput" autocomplete [autocompleteMinChars]="autocompleteMinChars"
-                            [autocompleteDebounceInterval]="autocompleteDebounceInterval" formControlName="tecnico"
-                            [options]="responsables" [placeholder]="placeholder" valueAccessor="name" labelAccessor="name"
-                            [filterOptionsFn]="filterOptionsFn('name')"
-                            (selectionChange)="onTecnicoSelectionChange($event)"
-                        >
-                        </ngx-mat-combobox>
-                    </mat-form-field>
-                    <mat-form-field class="w-100" appearance="outline">
-                        <mat-label>Antecedentes del llamado</mat-label>
-                        <input matInput placeholder="Describa los antecedentes..." formControlName="antecedentes" required>
-                    </mat-form-field>
-                    
-                    <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <button mat-raised-button color="primary" *ngIf="crear" type="submit"
-                                [disabled]="procesandoEncabezado">
-                            Crear OT<mat-icon>save</mat-icon></button>
-                        <button mat-raised-button color="primary" *ngIf="!crear && esPersonalized" type="submit"
-                                 [disabled]="procesandoEncabezado">
-                            Actualizar OT <mat-icon>save</mat-icon></button>
-                        <button mat-button matStepperNext *ngIf="!crear && !esPersonalized">Siguiente</button>
-                    </div>                   
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="formTimerOT" *ngIf="!crear && !esPersonalized && !esChild" 
-                      completed="false"  
-                      errorMessage="Hora de inicio es requerido."><!-- Inicio OT-->                       
-                <form [formGroup]="formTimerOT" (ngSubmit)="onSubmit('timer')" >
-                    <ng-template matStepLabel>Iniciar OT {{ servicio? 'de '.concat(servicio): '' }}</ng-template>
-                    <div fxLayout="column" fxLayoutAlign="space-evenly stretch" >              
-                        <mat-form-field appearance="outline">
-                            <mat-label>Número OT</mat-label>
-                            <input matInput autocomplete="off" 
-                                   placeholder="Número OT" formControlName="numero" 
-                                   type="text" [attr.disabled]="true">
-                        </mat-form-field>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Fecha</mat-label>
-                            <input matInput [matDatepicker]="pickerFechaOT" formControlName="fecha">
-                            <mat-datepicker-toggle matSuffix [for]="pickerFechaOT"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerFechaOT></mat-datepicker>
-                        </mat-form-field>     
-                        
-                        <button mat-raised-button color="primary"  (click)="iniciarOT()"
-                                *ngIf="!(fechaHoraInicio) && !esChild">Iniciar OT
-                            <mat-icon class="icon-right-middle">play_circle_filled</mat-icon>
-                        </button>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Hora Inicio</mat-label>
-                            <input matInput autocomplete="off" placeholder="Hora Inicio"
-                            pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
-                            type="text" formControlName="horaInicio" required>
-                        </mat-form-field>
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="center stretch" >
-                        <button mat-button matStepperPrevious>Anterior</button>
-                        <button mat-button matStepperNext [disabled]="formTimerOT.invalid">Siguiente</button>                  
-                    </div>                   
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="formChechListGeneral" *ngIf="!crear && !esPersonalized"
-                      [optional]="esMantencionPrev"   [completed]="false"      
-                      errorMessage="Faltan campos por completar."> <!-- Antecedentes -->
-                <form [formGroup]="formChechListGeneral" (ngSubmit)="onSubmit('general')">
-                    <ng-template matStepLabel>Antecedentes generales del trabajo</ng-template>
-                    <!-- Geolocalización -->
-                    <mat-form-field class="example-full-width" appearance="fill">
-                        <mat-label>Dirección</mat-label>
-                        <input type="search" matInput #search [attr.disabled]="true"
-                                formControlName="direccion" (keydown.enter)="$event.preventDefault()" 
-                                autocorrect="off" autocapitalize="off" spellcheck="off"
-                                placeholder="Active su geolocalización" />  
-                        <button matSuffix mat-icon-button aria-label="Buscar">
-                            <mat-icon>place</mat-icon>
-                        </button>
-                    </mat-form-field>
-                    <h5>Coordenadas</h5>
-                    <p style="font-size: 8pt;">
-                        Address: {{address}}<br />
-                        Latitude: {{latitud}}<br />
-                        Longitude: {{longitud}}<br />
-                    </p>
-                    <div class="google_map_container" *ngIf="latitud && longitud">
-                        <agm-map [latitude]="latitud" [longitude]="longitud" [zoom]="zoom">
-                            <agm-marker [latitude]="latitud" [longitude]="longitud" [markerDraggable]="true"></agm-marker>
-                        </agm-map>            
-                    </div> 
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  *ngIf="!equipos || equipos?.length === 0"
+                  (click)="recargarListado('equipo')"
+                >
+                  Recargar listado
+                  <mat-icon>cloud_sync</mat-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-mat-combobox>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Prioridad</mat-label>
+          <mat-select
+            placeholder="Prioridad"
+            formControlName="prioridad"
+            name="prioridad"
+            required
+          >
+            <mat-option
+              *ngFor="let prioridad of tipoPrioridad"
+              [value]="prioridad.value"
+            >
+              {{ prioridad.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>OT Generada por</mat-label>
+          <input
+            matInput
+            placeholder="OT Generada por"
+            formControlName="autor"
+            name="autor"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Técnico Ejecutante de Servicio</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="tecnico"
+            [options]="responsables"
+            [placeholder]="placeholder"
+            valueAccessor="name"
+            labelAccessor="name"
+            [filterOptionsFn]="filterOptionsFn('name')"
+            (selectionChange)="onTecnicoSelectionChange($event)"
+          >
+          </ngx-mat-combobox>
+        </mat-form-field>
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Antecedentes del llamado</mat-label>
+          <input
+            matInput
+            placeholder="Describa los antecedentes..."
+            formControlName="antecedentes"
+            required
+          />
+        </mat-form-field>
 
-                    <button mat-raised-button color="accent" *ngIf="!puedeVerMapa" (click)="obtenerCoordenadas()">
-                        Activar permisos de Geolocalización 
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button
+            mat-raised-button
+            color="primary"
+            *ngIf="crear"
+            type="submit"
+            [disabled]="procesandoEncabezado"
+          >
+            Crear OT<mat-icon>save</mat-icon>
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            *ngIf="!crear && esPersonalized"
+            type="submit"
+            [disabled]="procesandoEncabezado"
+          >
+            Actualizar OT <mat-icon>save</mat-icon>
+          </button>
+          <button mat-button matStepperNext *ngIf="!crear && !esPersonalized">
+            Siguiente
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="formTimerOT"
+      *ngIf="!crear && !esPersonalized && !esChild"
+      completed="false"
+      errorMessage="Hora de inicio es requerido."
+      ><!-- Inicio OT-->
+      <form [formGroup]="formTimerOT" (ngSubmit)="onSubmit('timer')">
+        <ng-template matStepLabel
+          >Iniciar OT {{ servicio ? "de ".concat(servicio) : "" }}</ng-template
+        >
+        <div fxLayout="column" fxLayoutAlign="space-evenly stretch">
+          <mat-form-field appearance="outline">
+            <mat-label>Número OT</mat-label>
+            <input
+              matInput
+              autocomplete="off"
+              placeholder="Número OT"
+              formControlName="numero"
+              type="text"
+              [attr.disabled]="true"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha</mat-label>
+            <input
+              matInput
+              [matDatepicker]="pickerFechaOT"
+              formControlName="fecha"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="pickerFechaOT"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #pickerFechaOT></mat-datepicker>
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="iniciarOT()"
+            *ngIf="!fechaHoraInicio && !esChild"
+          >
+            Iniciar OT
+            <mat-icon class="icon-right-middle">play_circle_filled</mat-icon>
+          </button>
+          <mat-form-field appearance="outline">
+            <mat-label>Hora Inicio</mat-label>
+            <input
+              matInput
+              autocomplete="off"
+              placeholder="Hora Inicio"
+              pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
+              type="text"
+              formControlName="horaInicio"
+              required
+            />
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button mat-button matStepperNext [disabled]="formTimerOT.invalid">
+            Siguiente
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="formChechListGeneral"
+      *ngIf="!crear && !esPersonalized"
+      [optional]="esMantencionPrev"
+      [completed]="false"
+      errorMessage="Faltan campos por completar."
+    >
+      <!-- Antecedentes -->
+      <form [formGroup]="formChechListGeneral" (ngSubmit)="onSubmit('general')">
+        <ng-template matStepLabel
+          >Antecedentes generales del trabajo</ng-template
+        >
+        <!-- Geolocalización -->
+        <mat-form-field class="example-full-width" appearance="fill">
+          <mat-label>Dirección</mat-label>
+          <input
+            type="search"
+            matInput
+            #search
+            [attr.disabled]="true"
+            formControlName="direccion"
+            (keydown.enter)="$event.preventDefault()"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="off"
+            placeholder="Active su geolocalización"
+          />
+          <button matSuffix mat-icon-button aria-label="Buscar">
+            <mat-icon>place</mat-icon>
+          </button>
+        </mat-form-field>
+        <h5>Coordenadas</h5>
+        <p style="font-size: 8pt">
+          Address: {{ address }}<br />
+          Latitude: {{ latitud }}<br />
+          Longitude: {{ longitud }}<br />
+        </p>
+        <div class="google_map_container" *ngIf="latitud && longitud">
+          <agm-map [latitude]="latitud" [longitude]="longitud" [zoom]="zoom">
+            <agm-marker
+              [latitude]="latitud"
+              [longitude]="longitud"
+              [markerDraggable]="true"
+            ></agm-marker>
+          </agm-map>
+        </div>
+
+        <button
+          mat-raised-button
+          color="accent"
+          *ngIf="!puedeVerMapa"
+          (click)="obtenerCoordenadas()"
+        >
+          Activar permisos de Geolocalización
+        </button>
+        <br />
+
+        <!-- Generales -->
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Descripción General del Trabajo</mat-label>
+          <textarea
+            matInput
+            placeholder="Descripción General del Trabajo"
+            matTextareaAutosize
+            matAutosizeMinRows="2"
+            matAutosizeMaxRows="5"
+            formControlName="descripcion"
+            required
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Materiales Utilizados</mat-label>
+          <textarea
+            matInput
+            placeholder="Materiales Utilizados"
+            formControlName="materiales"
+            matTextareaAutosize
+            matAutosizeMinRows="2"
+            matAutosizeMaxRows="5"
+            required
+          ></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Tipo falla</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="tipoFalla"
+            [options]="tipoFallas"
+            [placeholder]="placeholder"
+            valueAccessor="description"
+            labelAccessor="description"
+            [filterOptionsFn]="filterOptionsFn('description')"
+          >
+            <ng-template ngxMatComboboxFooter *ngIf="esAdministrador">
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center start"
+                class="nueva-opcion"
+              >
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openDialogRegistrarOpcion('tipoFalla')"
+                >
+                  Crear nueva opción
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-mat-combobox>
+          <mat-error *ngIf="formChechListGeneral.get('tipoFalla').invalid"
+            >This field is required</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Causa falla</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="causaFalla"
+            [options]="causaFallas"
+            [placeholder]="placeholder"
+            valueAccessor="description"
+            labelAccessor="description"
+            [filterOptionsFn]="filterOptionsFn('description')"
+            required
+          >
+            <ng-template ngxMatComboboxFooter *ngIf="esAdministrador">
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center start"
+                class="nueva-opcion"
+              >
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openDialogRegistrarOpcion('causaFalla')"
+                >
+                  Crear nueva opción
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-mat-combobox>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Metodo Detección</mat-label>
+          <ngx-mat-combobox
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="metodoDeteccionFalla"
+            [options]="metodosDeteccion"
+            [placeholder]="placeholder"
+            valueAccessor="description"
+            labelAccessor="description"
+            [filterOptionsFn]="filterOptionsFn('description')"
+            required
+          >
+            <ng-template ngxMatComboboxFooter>
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center start"
+                class="nueva-opcion"
+              >
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openDialogRegistrarOpcion('metodoDeteccion')"
+                >
+                  Crear nueva opción
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-mat-combobox>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>¿Equipo detenido?</mat-label>
+          <mat-select
+            placeholder="Equipo Detenido"
+            (selectionChange)="onEquipoDetenidoSelectionChange($event.value)"
+            formControlName="equipoDetenido"
+            name="equipoDetenido"
+            required
+          >
+            <mat-option
+              *ngFor="let opcion of opcionesEquipoDetenido"
+              [value]="opcion.value"
+            >
+              {{ opcion.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- true -->
+        <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
+          <mat-label>Motivo Detención</mat-label>
+          <ngx-mat-combobox
+            #comboxMotivo
+            [fillInput]="fillInput"
+            autocomplete
+            [autocompleteMinChars]="autocompleteMinChars"
+            [autocompleteDebounceInterval]="autocompleteDebounceInterval"
+            formControlName="motivoDetencion"
+            [options]="motivosDetencion"
+            [placeholder]="placeholder"
+            valueAccessor="nombre"
+            labelAccessor="nombre"
+            [filterOptionsFn]="filterOptionsFn('nombre')"
+            [attr.disabled]="
+              !(this.formChechListGeneral.get('equipoDetenido').value == 'Sí')
+            "
+          >
+            <ng-template ngxMatComboboxFooter>
+              <div
+                fxLayout="column"
+                fxLayoutAlign="center start"
+                class="nueva-opcion"
+              >
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="openDialogRegistrarOpcion('motivo')"
+                >
+                  Crear nueva opción
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+            </ng-template>
+          </ngx-mat-combobox>
+        </mat-form-field>
+
+        <mat-card *ngIf="esMantencionPreventiva">
+          <mat-card-header fxLayoutAlign="center">
+            <mat-card-subtitle
+              ><h2>CheckList {{ servicio }}</h2></mat-card-subtitle
+            >
+          </mat-card-header>
+          <mat-card-content>
+            <div fxLayoutAlign="space-between">
+              <mat-form-field class="w-100 p-2">
+                <mat-select
+                  placeholder="Tipo Mantenimiento"
+                  (selectionChange)="
+                    onTipoMantenimientoSelectionChange($event.value)
+                  "
+                >
+                  <mat-option
+                    *ngFor="let opcion of checklist"
+                    [value]="opcion.tipo"
+                  >
+                    {{ opcion.tipo }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div *ngIf="jsonCheckList && jsonCheckList.opciones?.length > 0">
+              <mat-form-field
+                appearance="outline"
+                *ngFor="let item of jsonCheckList?.opciones"
+              >
+                <mat-label>{{ item.titulo }}</mat-label>
+                <input
+                  matInput
+                  autocomplete="off"
+                  [placeholder]="item.titulo"
+                  type="text"
+                  [value]="item.contenido"
+                  (input)="item.contenido = $event.target.value"
+                  [name]="item.contenido"
+                />
+              </mat-form-field>
+            </div>
+            <div
+              perfectScrollbar
+              *ngIf="jsonCheckList && jsonCheckList.checklist?.length > 0"
+            >
+              <div class="p-2" *ngFor="let item of jsonCheckList.checklist">
+                {{ item.numero }}.- {{ item.actividad }}
+                <mat-button-toggle-group
+                  aria-label="Font Style"
+                  [value]="item.checklist"
+                  (change)="item.checklist = $event.value"
+                  [name]="item.actividad"
+                >
+                  <mat-button-toggle value="Sí">Sí</mat-button-toggle>
+                  <mat-button-toggle value="No">No</mat-button-toggle>
+                  <mat-button-toggle value="N/A">N/A</mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+            </div>
+            <div *ngIf="jsonCheckList">
+              <mat-form-field appearance="outline">
+                <mat-label
+                  >Observaciones {{ jsonCheckList.tipo | titlecase }}</mat-label
+                >
+                <input
+                  matInput
+                  autocomplete="off"
+                  type="text"
+                  [placeholder]="
+                    ''.concat('Observaciones ', jsonCheckList.tipo) | titlecase
+                  "
+                  [value]="jsonCheckList.observaciones"
+                  (input)="jsonCheckList.observaciones = $event.target.value"
+                  [name]="jsonCheckList.observaciones"
+                />
+              </mat-form-field>
+            </div>
+            <div *ngIf="jsonCheckList && jsonCheckList.fotos?.length > 0">
+              <div *ngFor="let item of jsonCheckList.fotos; let i = index">
+                <div class="p-2" *ngIf="!item.url || item.url?.length === 0">
+                  <mat-form-field>
+                    <ngx-mat-file-input
+                      #fotoChecklist
+                      [placeholder]="'Foto '.concat(item.estado)"
+                      (change)="onFotoChecklistUploadChange($event, item)"
+                      accept="image/*"
+                      [disabled]="!(uploadFotoChecklist == -1)"
+                    ></ngx-mat-file-input>
+                    <mat-icon matSuffix>add_a_photo</mat-icon>
+                    <mat-progress-bar
+                      *ngIf="!(uploadFotoChecklist == -1)"
+                      mode="determinate"
+                      [value]="uploadFotoChecklist"
+                    ></mat-progress-bar>
+                  </mat-form-field>
+                </div>
+
+                <mat-card class="foto-card" *ngIf="item.url">
+                  <mat-card-title-group>
+                    <mat-card-subtitle>
+                      <div
+                        fxLayout="column"
+                        fxLayoutAlign="space-between center"
+                      >
+                        <span>{{ item.estado }}</span>
+                        <span>&nbsp;</span>
+                        <button
+                          mat-mini-fab
+                          color="warn"
+                          (click)="eliminarFotoDeCheckList(item)"
+                          *ngIf="esAdministrador"
+                          aria-label="Eliminar foto"
+                          matTooltip="Eliminar foto"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    </mat-card-subtitle>
+                    <img
+                      mat-card-xl-image
+                      [src]="item.url"
+                      [alt]="item.estado"
+                      class="preview-image"
+                    />
+                  </mat-card-title-group>
+                </mat-card>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <br />
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button
+            mat-button
+            matStepperNext
+            *ngIf="!esMantencionPreventiva"
+            [disabled]="formChechListGeneral.invalid"
+          >
+            Siguiente
+          </button>
+          <button mat-button *ngIf="esMantencionPreventiva" matStepperNext>
+            Siguiente
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            matTooltip="Solo guardar"
+          >
+            Guardar
+            <mat-icon>save</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="formFotosOT"
+      *ngIf="!crear && !esPersonalized && !esMantencionPreventiva"
+      errorMessage="Debe adjuntar al menos una foto"
+    >
+      <!-- Fotos  -->
+      <form [formGroup]="formFotosOT" (ngSubmit)="onSubmit('fotos')">
+        <ng-template matStepLabel
+          ><p (click)="subirYGuardarCambios()">
+            Fotos del trabajo
+          </p></ng-template
+        >
+        <!-- Campos InputFiles -->
+        <mat-form-field *ngIf="!urlFoto1">
+          <ngx-mat-file-input
+            formControlName="foto1"
+            placeholder="Foto 1"
+            required
+            accept="image/*"
+          ></ngx-mat-file-input>
+          <mat-icon matSuffix>add_a_photo</mat-icon>
+          <mat-progress-bar
+            *ngIf="!(uploadFoto1 == -1)"
+            mode="determinate"
+            [value]="uploadFoto1"
+          ></mat-progress-bar>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!urlFoto2">
+          <ngx-mat-file-input
+            formControlName="foto2"
+            placeholder="Foto 2"
+            accept="image/*"
+          ></ngx-mat-file-input>
+          <mat-icon matSuffix>add_a_photo</mat-icon>
+          <mat-progress-bar
+            *ngIf="!(uploadFoto2 == -1)"
+            mode="determinate"
+            [value]="uploadFoto2"
+          ></mat-progress-bar>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!urlFoto3">
+          <ngx-mat-file-input
+            formControlName="foto3"
+            placeholder="Foto 3"
+            accept="image/*"
+          ></ngx-mat-file-input>
+          <mat-icon matSuffix>add_a_photo</mat-icon>
+          <mat-progress-bar
+            *ngIf="!(uploadFoto3 == -1)"
+            mode="determinate"
+            [value]="uploadFoto3"
+          ></mat-progress-bar>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!urlFoto4">
+          <ngx-mat-file-input
+            formControlName="foto4"
+            placeholder="Foto 4"
+            accept="image/*"
+          ></ngx-mat-file-input>
+          <mat-icon matSuffix>add_a_photo</mat-icon>
+          <mat-progress-bar
+            *ngIf="!(uploadFoto4 == -1)"
+            mode="determinate"
+            [value]="uploadFoto4"
+          ></mat-progress-bar>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="!urlFoto5">
+          <ngx-mat-file-input
+            formControlName="foto5"
+            placeholder="Foto 5"
+            accept="image/*"
+          ></ngx-mat-file-input>
+          <mat-icon matSuffix>add_a_photo</mat-icon>
+          <mat-progress-bar
+            *ngIf="!(uploadFoto5 == -1)"
+            mode="determinate"
+            [value]="uploadFoto5"
+          ></mat-progress-bar>
+        </mat-form-field>
+
+        <!-- Vista de fotos -->
+        <div
+          fxLayout="row wrap"
+          fxLayoutAlign="space-around center"
+          fxLayoutGap="32px 12px grid"
+        >
+          <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%">
+            <mat-card class="foto-card" *ngIf="urlFoto1">
+              <mat-card-title-group>
+                <mat-card-subtitle>
+                  <div fxLayout="column" fxLayoutAlign="space-between center">
+                    <span>Foto 1</span>
+                    <span>&nbsp;</span>
+
+                    <button
+                      mat-mini-fab
+                      color="warn"
+                      (click)="eliminarFoto(1)"
+                      *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
+                      aria-label="Eliminar foto"
+                      matTooltip="Eliminar foto"
+                    >
+                      <mat-icon>delete</mat-icon>
                     </button>
-                    <br /> 
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="repararLink(1)"
+                      *ngIf="sizeFoto1 === undefined || sizeFoto1 < 100"
+                      aria-label="Reparar link"
+                      matTooltip="Reparar link"
+                    >
+                      <mat-icon>insert_link</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="accent"
+                      (click)="comprimirFoto(1)"
+                      *ngIf="
+                        (esAdministrador || esSupervisor) && sizeFoto1 > 100000
+                      "
+                      aria-label="Comprimir foto"
+                      matTooltip="Comprimir foto"
+                    >
+                      <mat-icon>folder_zip</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-subtitle>
+                <img
+                  mat-card-xl-image
+                  [src]="urlFoto1"
+                  alt="Foto 1"
+                  class="preview-image"
+                />
+              </mat-card-title-group>
+            </mat-card>
+          </div>
+          <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%">
+            <mat-card class="foto-card" *ngIf="urlFoto2">
+              <mat-card-title-group>
+                <mat-card-subtitle>
+                  <div fxLayout="column" fxLayoutAlign="space-between center">
+                    <span>Foto 2</span>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="warn"
+                      (click)="eliminarFoto(2)"
+                      *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
+                      aria-label="Eliminar foto"
+                      matTooltip="Eliminar foto"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="repararLink(2)"
+                      *ngIf="sizeFoto2 === undefined || sizeFoto2 < 100"
+                      aria-label="Reparar link"
+                      matTooltip="Reparar link"
+                    >
+                      <mat-icon>insert_link</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="accent"
+                      (click)="comprimirFoto(2)"
+                      *ngIf="
+                        (esAdministrador || esSupervisor) && sizeFoto2 > 100000
+                      "
+                      aria-label="Comprimir foto"
+                      matTooltip="Comprimir foto"
+                    >
+                      <mat-icon>folder_zip</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-subtitle>
+                <img
+                  mat-card-xl-image
+                  [src]="urlFoto2"
+                  alt="Foto 2"
+                  class="preview-image"
+                />
+              </mat-card-title-group>
+            </mat-card>
+          </div>
+          <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%">
+            <mat-card class="foto-card" *ngIf="urlFoto3">
+              <mat-card-title-group>
+                <mat-card-subtitle>
+                  <div fxLayout="column" fxLayoutAlign="space-between center">
+                    <span>Foto 3</span>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="warn"
+                      (click)="eliminarFoto(3)"
+                      *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
+                      aria-label="Eliminar foto"
+                      matTooltip="Eliminar foto"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="repararLink(3)"
+                      *ngIf="sizeFoto3 === undefined || sizeFoto3 < 100"
+                      aria-label="Reparar link"
+                      matTooltip="Reparar link"
+                    >
+                      <mat-icon>insert_link</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="accent"
+                      (click)="comprimirFoto(3)"
+                      *ngIf="
+                        (esAdministrador || esSupervisor) && sizeFoto3 > 100000
+                      "
+                      aria-label="Comprimir foto"
+                      matTooltip="Comprimir foto"
+                    >
+                      <mat-icon>folder_zip</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-subtitle>
+                <img
+                  mat-card-xl-image
+                  [src]="urlFoto3"
+                  alt="Foto 3"
+                  class="preview-image"
+                />
+              </mat-card-title-group>
+            </mat-card>
+          </div>
+          <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%">
+            <mat-card class="foto-card" *ngIf="urlFoto4">
+              <mat-card-title-group>
+                <mat-card-subtitle>
+                  <div fxLayout="column" fxLayoutAlign="space-between center">
+                    <span>Foto 4</span>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="warn"
+                      (click)="eliminarFoto(4)"
+                      *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
+                      aria-label="Eliminar foto"
+                      matTooltip="Eliminar foto"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="repararLink(4)"
+                      *ngIf="sizeFoto4 === undefined || sizeFoto4 < 100"
+                      aria-label="Reparar link"
+                      matTooltip="Reparar link"
+                    >
+                      <mat-icon>insert_link</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="accent"
+                      (click)="comprimirFoto(4)"
+                      *ngIf="
+                        (esAdministrador || esSupervisor) && sizeFoto4 > 100000
+                      "
+                      aria-label="Comprimir foto"
+                      matTooltip="Comprimir foto"
+                    >
+                      <mat-icon>folder_zip</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-subtitle>
+                <img
+                  mat-card-xl-image
+                  [src]="urlFoto4"
+                  alt="Foto 4"
+                  class="preview-image"
+                />
+              </mat-card-title-group>
+            </mat-card>
+          </div>
+          <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%">
+            <mat-card class="foto-card" *ngIf="urlFoto5">
+              <mat-card-title-group>
+                <mat-card-subtitle>
+                  <div fxLayout="column" fxLayoutAlign="space-between center">
+                    <span>Foto 5</span>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="warn"
+                      (click)="eliminarFoto(5)"
+                      *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
+                      aria-label="Eliminar foto"
+                      matTooltip="Eliminar foto"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="primary"
+                      (click)="repararLink(5)"
+                      *ngIf="sizeFoto5 === undefined || sizeFoto5 < 100"
+                      aria-label="Reparar link"
+                      matTooltip="Reparar link"
+                    >
+                      <mat-icon>insert_link</mat-icon>
+                    </button>
+                    <span>&nbsp;</span>
+                    <button
+                      mat-mini-fab
+                      color="accent"
+                      (click)="comprimirFoto(5)"
+                      *ngIf="
+                        (esAdministrador || esSupervisor) && sizeFoto5 > 100000
+                      "
+                      aria-label="Comprimir foto"
+                      matTooltip="Comprimir foto"
+                    >
+                      <mat-icon>folder_zip</mat-icon>
+                    </button>
+                  </div>
+                </mat-card-subtitle>
+                <img
+                  mat-card-xl-image
+                  [src]="urlFoto5"
+                  alt="Foto 5"
+                  class="preview-image"
+                />
+              </mat-card-title-group>
+            </mat-card>
+          </div>
+        </div>
+        <!-- Opciones fotos  -->
 
-                    <!-- Generales --> 
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Descripción General del Trabajo</mat-label>
-                        <textarea matInput placeholder="Descripción General del Trabajo" matTextareaAutosize 
-                                  matAutosizeMinRows="2" matAutosizeMaxRows="5" formControlName="descripcion" required></textarea>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Materiales Utilizados</mat-label>
-                        <textarea matInput placeholder="Materiales Utilizados" formControlName="materiales" matTextareaAutosize 
-                                  matAutosizeMinRows="2" matAutosizeMaxRows="5" required></textarea>
-                    </mat-form-field>
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button
+            mat-button
+            matStepperNext
+            [disabled]="formFotosOT.invalid"
+            *ngIf="
+              esChild === undefined ||
+              (esChild &&
+                tarea?.id === tareasChilds[tareasChilds.length - 1]?.id)
+            "
+          >
+            Siguiente
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            *ngIf="fotosPorSubir"
+            (click)="clickUpload()"
+            [disabled]="!existsArchivosPorSubir()"
+          >
+            <em
+              class="fas fa-sync fa-spin"
+              *ngIf="!existsArchivosPorSubir()"
+            ></em>
+            {{ mensajeSubirArchivo }}
+            <mat-icon>upload_file</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      [stepControl]="formFirmasOT"
+      (click)="scrollToTop('idFirmas')"
+      id="idFirmas"
+      perfectScrollbar
+      *ngIf="
+        !crear &&
+        !esPersonalized &&
+        (esChild === undefined ||
+          (esChild && tarea?.id === tareasChilds[tareasChilds.length - 1]?.id))
+      "
+      errorMessage="Falta datos de firma."
+    >
+      <!-- Firmas y observaciones -->
+      <form [formGroup]="formFirmasOT" (ngSubmit)="onSubmit('firmas')">
+        <ng-template matStepLabel>Firmas y observaciones</ng-template>
+        <mat-form-field appearance="outline">
+          <mat-label>Observaciones</mat-label>
+          <textarea
+            matInput
+            placeholder="Observaciones"
+            matTextareaAutosize
+            required
+            matAutosizeMinRows="2"
+            matAutosizeMaxRows="5"
+            formControlName="observaciones"
+          ></textarea>
+        </mat-form-field>
+        <div fxLayout="column" fxLayoutAlign="center stretch">
+          <mat-error *ngIf="formFirmasOT.invalid">
+            ¡La firma del cliente es obligatoria!
+          </mat-error>
+          <img
+            [src]="transformBase64()"
+            *ngIf="existeFirmaAprobada"
+            alt="Firma Aprobador"
+            id="imgFirma"
+          />
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="modalFaltanCampos()"
+            *ngIf="!existeFirmaAprobada"
+          >
+            Firmar Trabajo Aceptado
+            <mat-icon>draw</mat-icon>
+          </button>
+        </div>
 
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Tipo falla</mat-label>
-                        <ngx-mat-combobox
-                          [fillInput]="fillInput"
-                          autocomplete
-                          [autocompleteMinChars]="autocompleteMinChars"
-                          [autocompleteDebounceInterval]="autocompleteDebounceInterval"
-                          formControlName="tipoFalla"
-                          [options]="tipoFallas"
-                          [placeholder]="placeholder"
-                          valueAccessor="description"
-                          labelAccessor="description"
-                          [filterOptionsFn]="filterOptionsFn('description')" 
-                        >
-                            <ng-template ngxMatComboboxFooter *ngIf="esAdministrador">
-                                <div fxLayout="column" fxLayoutAlign="center start" class="nueva-opcion">
-                                    <button mat-stroked-button color="primary" (click)="openDialogRegistrarOpcion('tipoFalla')">Crear nueva opción
-                                        <mat-icon>add_circle_outline</mat-icon>
-                                    </button>
-                                </div>
-                            </ng-template>                    
-                        </ngx-mat-combobox>
-                        <mat-error *ngIf="formChechListGeneral.get('tipoFalla').invalid">This field is required</mat-error>                          
-                    </mat-form-field>
-            
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Causa falla</mat-label>
-                        <ngx-mat-combobox
-                        [fillInput]="fillInput"
-                        autocomplete
-                        [autocompleteMinChars]="autocompleteMinChars"
-                        [autocompleteDebounceInterval]="autocompleteDebounceInterval"
-                        formControlName="causaFalla"
-                        [options]="causaFallas"
-                        [placeholder]="placeholder"
-                        valueAccessor="description"
-                        labelAccessor="description"
-                        [filterOptionsFn]="filterOptionsFn('description')"
-                        required
-                        >
-                            <ng-template ngxMatComboboxFooter *ngIf="esAdministrador">
-                                <div fxLayout="column" fxLayoutAlign="center start" class="nueva-opcion">
-                                    <button mat-stroked-button color="primary" (click)="openDialogRegistrarOpcion('causaFalla')">Crear nueva opción
-                                        <mat-icon>add_circle_outline</mat-icon>
-                                    </button>
-                                </div>
-                            </ng-template>  
-                        </ngx-mat-combobox>
-                    </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Nombres y Apellidos</mat-label>
+          <input
+            type="text"
+            placeholder="Nombre y Apellido"
+            aria-label="Number"
+            matInput
+            formControlName="aceptado_por_nombre"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Rut</mat-label>
+          <input
+            type="text"
+            placeholder="Rut"
+            aria-label="Number"
+            matInput
+            formControlName="aceptado_por_rut"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Cargo</mat-label>
+          <input
+            type="text"
+            placeholder="Cargo"
+            aria-label="Number"
+            matInput
+            formControlName="aceptado_por_cargo"
+            required
+          />
+        </mat-form-field>
 
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Metodo Detección</mat-label>
-                        <ngx-mat-combobox
-                        [fillInput]="fillInput"
-                        autocomplete
-                        [autocompleteMinChars]="autocompleteMinChars"
-                        [autocompleteDebounceInterval]="autocompleteDebounceInterval"
-                        formControlName="metodoDeteccionFalla"
-                        [options]="metodosDeteccion"
-                        [placeholder]="placeholder"
-                        valueAccessor="description"
-                        labelAccessor="description"
-                        [filterOptionsFn]="filterOptionsFn('description')"
-                        required
-                        >
-                            <ng-template ngxMatComboboxFooter>
-                                <div fxLayout="column" fxLayoutAlign="center start" class="nueva-opcion">
-                                    <button mat-stroked-button color="primary" (click)="openDialogRegistrarOpcion('metodoDeteccion')">Crear nueva opción
-                                        <mat-icon>add_circle_outline</mat-icon>
-                                    </button>
-                                </div>
-                            </ng-template>
-                    
-                        </ngx-mat-combobox>
-                    </mat-form-field>
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button mat-button matStepperNext [disabled]="formFirmasOT.invalid">
+            Guardar y Siguiente
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      *ngIf="
+        !crear &&
+        !esPersonalized &&
+        (esChild === undefined ||
+          (esChild && tarea?.id === tareasChilds[tareasChilds.length - 1]?.id))
+      "
+      [stepControl]="formTimerEndOT"
+    >
+      <!-- Terminar OT-->
+      <form [formGroup]="formTimerEndOT" (ngSubmit)="onSubmit('finalizar')">
+        <ng-template matStepLabel>Finalizar la OT</ng-template>
 
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>¿Equipo detenido?</mat-label>
-                        <mat-select placeholder="Equipo Detenido" 
-                                    (selectionChange)="onEquipoDetenidoSelectionChange($event.value)"
-                                    formControlName="equipoDetenido" name="equipoDetenido" required>
-                            <mat-option *ngFor="let opcion of opcionesEquipoDetenido" [value]="opcion.value">
-                                {{opcion.viewValue}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <!-- true -->
-                    <mat-form-field appearance="outline" *ngIf="!esMantencionPreventiva">
-                        <mat-label>Motivo Detención</mat-label>
-                        <ngx-mat-combobox #comboxMotivo 
-                        [fillInput]="fillInput"
-                        autocomplete                                             
-                        [autocompleteMinChars]="autocompleteMinChars"
-                        [autocompleteDebounceInterval]="autocompleteDebounceInterval"
-                        formControlName="motivoDetencion"                       
-                        [options]="motivosDetencion"
-                        [placeholder]="placeholder"
-                        valueAccessor="nombre"
-                        labelAccessor="nombre"
-                        [filterOptionsFn]="filterOptionsFn('nombre')"  
-                        [attr.disabled]="!(this.formChechListGeneral.get('equipoDetenido').value=='Sí')"
-                        >
-                        <ng-template ngxMatComboboxFooter>
-                            <div fxLayout="column" fxLayoutAlign="center start" class="nueva-opcion">
-                                <button mat-stroked-button color="primary" (click)="openDialogRegistrarOpcion('motivo')">Crear nueva opción
-                                    <mat-icon>add_circle_outline</mat-icon>
-                                </button>
-                            </div>
-                        </ng-template>
-                    </ngx-mat-combobox>
-                    </mat-form-field>
-                    
+        <mat-card *ngIf="!verificaFormularios()">
+          <em class="text-red">{{ camposFaltantes }}</em>
+          <button mat-raised-button color="primary" (click)="refresh()">
+            <mat-icon class="icon-left-middle">refresh</mat-icon>
+          </button>
+        </mat-card>
+        <div fxLayout="column" fxLayoutAlign="space-around stretch">
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="modalFaltanCampos('parar')"
+            [disabled]="!verificaFormularios()"
+            *ngIf="!horaFinal"
+          >
+            Terminar OT
+            <mat-icon class="icon-right-middle">pan_tool</mat-icon>
+          </button>
+          <br />
+          <mat-form-field appearance="outline">
+            <mat-label>Hora Término</mat-label>
+            <input
+              matInput
+              autocomplete="off"
+              formControlName="horaTermino"
+              pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
+              placeholder="Hora Término"
+              type="text"
+              required
+              [readOnly]="true"
+            />
+          </mat-form-field>
 
-                    <mat-card *ngIf="esMantencionPreventiva">
-                        <mat-card-header fxLayoutAlign="center">                
-                            <mat-card-subtitle><h2>CheckList {{servicio}}</h2></mat-card-subtitle>
-                        </mat-card-header>
-                        <mat-card-content>
-                            <div fxLayoutAlign="space-between">
-                                <mat-form-field class="w-100 p-2">                                    
-                                    <mat-select placeholder="Tipo Mantenimiento"
-                                                (selectionChange)="onTipoMantenimientoSelectionChange($event.value)">
-                                        <mat-option *ngFor="let opcion of checklist" [value]="opcion.tipo">
-                                            {{opcion.tipo}}
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>                               
-                            </div>
-                            <div *ngIf="jsonCheckList && jsonCheckList.opciones?.length > 0">
-                                <mat-form-field appearance="outline" *ngFor="let item of jsonCheckList?.opciones">
-                                    <mat-label>{{item.titulo}}</mat-label>
-                                    <input matInput autocomplete="off" [placeholder]="item.titulo" type="text"
-                                           [value]="item.contenido"  
-                                           (input)="item.contenido = $event.target.value" 
-                                           [name]="item.contenido">
-                                </mat-form-field>
-                            </div>
-                            <div perfectScrollbar *ngIf="jsonCheckList && jsonCheckList.checklist?.length > 0">
-                                <div class="p-2" *ngFor="let item of jsonCheckList.checklist">
-                                    {{item.numero}}.- {{ item.actividad }}
-                                    <mat-button-toggle-group aria-label="Font Style"
-                                           [value]="item.checklist" 
-                                           (change)="item.checklist = $event.value" 
-                                           [name]="item.actividad"> 
-                                      <mat-button-toggle value="Sí">Sí</mat-button-toggle>
-                                      <mat-button-toggle value="No">No</mat-button-toggle>
-                                      <mat-button-toggle value="N/A">N/A</mat-button-toggle>
-                                    </mat-button-toggle-group>
-                                </div>
-                            </div>
-                            <div *ngIf="jsonCheckList">
-                                <mat-form-field appearance="outline">
-                                    <mat-label>Observaciones {{jsonCheckList.tipo | titlecase }}</mat-label>
-                                    <input matInput autocomplete="off" type="text"
-                                           [placeholder]="''.concat('Observaciones ',jsonCheckList.tipo) | titlecase"  
-                                           [value]="jsonCheckList.observaciones"  
-                                           (input)="jsonCheckList.observaciones = $event.target.value" 
-                                           [name]="jsonCheckList.observaciones">
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="jsonCheckList && jsonCheckList.fotos?.length > 0">
-                                <div *ngFor="let item of jsonCheckList.fotos;let i = index">                           
-                                    <div class="p-2" *ngIf="!item.url || item.url?.length===0">
-                                        <mat-form-field>
-                                            <ngx-mat-file-input #fotoChecklist
-                                                [placeholder]="'Foto '.concat(item.estado)" 
-                                                (change)="onFotoChecklistUploadChange($event, item)"
-                                                accept="image/*"
-                                                [disabled]="!(uploadFotoChecklist==-1)"
-                                                ></ngx-mat-file-input>
-                                            <mat-icon matSuffix>add_a_photo</mat-icon>
-                                            <mat-progress-bar *ngIf="!(uploadFotoChecklist==-1)" mode="determinate" [value]="uploadFotoChecklist"></mat-progress-bar>
-                                        </mat-form-field>
-                                    </div>
-                                   
-                                    <mat-card class="foto-card" *ngIf="item.url" >
-                                        <mat-card-title-group>
-                                        <mat-card-subtitle>
-                                            <div fxLayout="column" fxLayoutAlign="space-between center">
-                                                    <span>{{item.estado}}</span>
-                                                    <span>&nbsp;</span>                                                    
-                                                    <button mat-mini-fab color="warn" (click)="eliminarFotoDeCheckList(item)"
-                                                            *ngIf="esAdministrador"
-                                                            aria-label="Eliminar foto" matTooltip="Eliminar foto">
-                                                    <mat-icon>delete</mat-icon>
-                                                    </button>                                                                                           
-                                            </div>
-                                        </mat-card-subtitle>
-                                        <img mat-card-xl-image  [src]="item.url" [alt]="item.estado" class="preview-image" />
-                                        </mat-card-title-group>                        
-                                    </mat-card>
-                                </div>                               
-                            </div>
-                        </mat-card-content>
-                    </mat-card>
-                    <br />
-                    <div fxLayout="row" fxLayoutAlign="center stretch" >
-                        <button mat-button matStepperPrevious>Anterior</button>
-                        <button mat-button matStepperNext
-                                *ngIf="!esMantencionPreventiva"
-                                [disabled]="formChechListGeneral.invalid">Siguiente</button>
-                        <button mat-button 
-                                *ngIf="esMantencionPreventiva"
-                                matStepperNext>Siguiente</button>
-                        <button mat-raised-button color="primary" type="submit"                                
-                                matTooltip="Solo guardar">Guardar
-                            <mat-icon>save</mat-icon>
-                        </button>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="formFotosOT"
-                      *ngIf="!crear && !esPersonalized && !esMantencionPreventiva" 
-                      errorMessage="Debe adjuntar al menos una foto"> <!-- Fotos  -->
-                <form [formGroup]="formFotosOT"  (ngSubmit)="onSubmit('fotos')">
-                    <ng-template matStepLabel><p (click)="subirYGuardarCambios()">Fotos del trabajo</p></ng-template>
-                    <!-- Campos InputFiles -->
-                    <mat-form-field *ngIf="!urlFoto1">
-                        <ngx-mat-file-input formControlName="foto1" placeholder="Foto 1" required accept="image/*"></ngx-mat-file-input>
-                        <mat-icon matSuffix>add_a_photo</mat-icon>                        
-                        <mat-progress-bar *ngIf="!(uploadFoto1==-1)" mode="determinate" [value]="uploadFoto1"></mat-progress-bar>
-                    </mat-form-field>
-
-                    <mat-form-field *ngIf="!urlFoto2">
-                        <ngx-mat-file-input formControlName="foto2" placeholder="Foto 2" accept="image/*"></ngx-mat-file-input>
-                        <mat-icon matSuffix>add_a_photo</mat-icon>                        
-                        <mat-progress-bar *ngIf="!(uploadFoto2==-1)" mode="determinate" [value]="uploadFoto2"></mat-progress-bar>
-                    </mat-form-field>
-
-                    <mat-form-field *ngIf="!urlFoto3">
-                        <ngx-mat-file-input formControlName="foto3" placeholder="Foto 3" accept="image/*"></ngx-mat-file-input>
-                        <mat-icon matSuffix>add_a_photo</mat-icon>                        
-                        <mat-progress-bar *ngIf="!(uploadFoto3==-1)" mode="determinate" [value]="uploadFoto3"></mat-progress-bar>
-                    </mat-form-field>
-
-                    <mat-form-field *ngIf="!urlFoto4">
-                        <ngx-mat-file-input formControlName="foto4" placeholder="Foto 4" accept="image/*"></ngx-mat-file-input>
-                        <mat-icon matSuffix>add_a_photo</mat-icon>                        
-                        <mat-progress-bar *ngIf="!(uploadFoto4==-1)" mode="determinate" [value]="uploadFoto4"></mat-progress-bar>
-                    </mat-form-field>
-
-                    <mat-form-field *ngIf="!urlFoto5">
-                        <ngx-mat-file-input formControlName="foto5" placeholder="Foto 5" accept="image/*"></ngx-mat-file-input>
-                        <mat-icon matSuffix>add_a_photo</mat-icon>                        
-                        <mat-progress-bar *ngIf="!(uploadFoto5==-1)" mode="determinate" [value]="uploadFoto5"></mat-progress-bar>
-                    </mat-form-field>
-
-                    <!-- Vista de fotos -->
-                    <div fxLayout="row wrap" fxLayoutAlign="space-around center" fxLayoutGap="32px 12px grid"  >  
-                        <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%">              
-                            <mat-card class="foto-card" *ngIf="urlFoto1" >
-                                <mat-card-title-group>
-                                <mat-card-subtitle>
-                                    <div fxLayout="column" fxLayoutAlign="space-between center">
-                                            <span>Foto 1</span>
-                                            <span>&nbsp;</span>
-                                            
-                                            <button mat-mini-fab color="warn" (click)="eliminarFoto(1)"
-                                                    *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
-                                                    aria-label="Eliminar foto" matTooltip="Eliminar foto">
-                                            <mat-icon>delete</mat-icon>
-                                            </button> 
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="primary" (click)="repararLink(1)"
-                                                    *ngIf="sizeFoto1 === undefined || sizeFoto1 < 100"
-                                                    aria-label="Reparar link" matTooltip="Reparar link">
-                                            <mat-icon>insert_link</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="accent" (click)="comprimirFoto(1)"
-                                                    *ngIf="(esAdministrador || esSupervisor) && sizeFoto1 > 100000"
-                                                    aria-label="Comprimir foto" matTooltip="Comprimir foto">
-                                            <mat-icon>folder_zip</mat-icon>
-                                            </button>    
-                                    </div>
-                                </mat-card-subtitle>
-                                <img mat-card-xl-image  [src]="urlFoto1" alt="Foto 1" class="preview-image"/>
-                                </mat-card-title-group>                        
-                            </mat-card>
-                        </div>
-                        <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%"> 
-                            <mat-card class="foto-card" *ngIf="urlFoto2" >
-                                <mat-card-title-group>
-                                <mat-card-subtitle>                                        
-                                    <div fxLayout="column" fxLayoutAlign="space-between center" >
-                                            <span>Foto 2</span>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="warn" (click)="eliminarFoto(2)"
-                                                    *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
-                                                    aria-label="Eliminar foto" matTooltip="Eliminar foto">
-                                            <mat-icon>delete</mat-icon>
-                                        </button> 
-                                        <span>&nbsp;</span>
-                                            <button mat-mini-fab color="primary" (click)="repararLink(2)"
-                                                    *ngIf="sizeFoto2 === undefined || sizeFoto2 < 100"
-                                                    aria-label="Reparar link" matTooltip="Reparar link">
-                                            <mat-icon>insert_link</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="accent" (click)="comprimirFoto(2)"
-                                                    *ngIf="(esAdministrador || esSupervisor) && sizeFoto2 > 100000"
-                                                    aria-label="Comprimir foto" matTooltip="Comprimir foto">
-                                            <mat-icon>folder_zip</mat-icon>
-                                            </button> 
-                                    </div>
-                                </mat-card-subtitle>
-                                <img mat-card-xl-image  [src]="urlFoto2" alt="Foto 2" class="preview-image" />
-                                </mat-card-title-group>                        
-                            </mat-card>
-                        </div>
-                        <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%"> 
-                            <mat-card class="foto-card" *ngIf="urlFoto3" >
-                                <mat-card-title-group>
-                                <mat-card-subtitle>                                    
-                                    <div fxLayout="column" fxLayoutAlign="space-between center" >
-                                            <span>Foto 3</span>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="warn" (click)="eliminarFoto(3)"
-                                                    *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
-                                                    aria-label="Eliminar foto" matTooltip="Eliminar foto">
-                                            <mat-icon>delete</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="primary" (click)="repararLink(3)"
-                                                    *ngIf="sizeFoto3 === undefined || sizeFoto3 < 100"
-                                                    aria-label="Reparar link" matTooltip="Reparar link">
-                                            <mat-icon>insert_link</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="accent" (click)="comprimirFoto(3)"
-                                                    *ngIf="(esAdministrador || esSupervisor) && sizeFoto3 > 100000"
-                                                    aria-label="Comprimir foto" matTooltip="Comprimir foto">
-                                            <mat-icon>folder_zip</mat-icon>
-                                            </button> 
-                                    </div>
-                                </mat-card-subtitle>
-                                <img mat-card-xl-image  [src]="urlFoto3" alt="Foto 3" class="preview-image" />
-                                </mat-card-title-group>                        
-                            </mat-card>
-                        </div>
-                        <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%"> 
-                            <mat-card class="foto-card" *ngIf="urlFoto4" >
-                                <mat-card-title-group>
-                                <mat-card-subtitle>
-                                        <div fxLayout="column" fxLayoutAlign="space-between center" >
-                                            <span>Foto 4</span>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="warn" (click)="eliminarFoto(4)"
-                                                    *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
-                                                    aria-label="Eliminar foto" matTooltip="Eliminar foto">
-                                            <mat-icon>delete</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="primary" (click)="repararLink(4)"
-                                                    *ngIf="sizeFoto4 === undefined || sizeFoto4 < 100"
-                                                    aria-label="Reparar link" matTooltip="Reparar link">
-                                            <mat-icon>insert_link</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="accent" (click)="comprimirFoto(4)"
-                                                    *ngIf="(esAdministrador || esSupervisor) && sizeFoto4 > 100000"
-                                                    aria-label="Comprimir foto" matTooltip="Comprimir foto">
-                                            <mat-icon>folder_zip</mat-icon>
-                                            </button> 
-                                        </div>
-                                </mat-card-subtitle>
-                                <img mat-card-xl-image  [src]="urlFoto4" alt="Foto 4" class="preview-image" />
-                                </mat-card-title-group>                        
-                            </mat-card>
-                        </div>
-                        <div fxFlex="48%" fxFlex.xs="100%" fxFlex.sm="48%"> 
-                            <mat-card class="foto-card" *ngIf="urlFoto5" >
-                                <mat-card-title-group>
-                                <mat-card-subtitle>
-                                        <div fxLayout="column" fxLayoutAlign="space-between center" >
-                                            <span>Foto 5</span>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="warn" (click)="eliminarFoto(5)"
-                                                    *ngIf="!esBodeguero && !otFinalizada && !esPersonalized"
-                                                    aria-label="Eliminar foto" matTooltip="Eliminar foto">
-                                            <mat-icon>delete</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="primary" (click)="repararLink(5)"
-                                                    *ngIf="sizeFoto5 === undefined || sizeFoto5 < 100"
-                                                    aria-label="Reparar link" matTooltip="Reparar link">
-                                            <mat-icon>insert_link</mat-icon>
-                                            </button>
-                                            <span>&nbsp;</span>
-                                            <button mat-mini-fab color="accent" (click)="comprimirFoto(5)"
-                                                    *ngIf="(esAdministrador || esSupervisor) && sizeFoto5 > 100000"
-                                                    aria-label="Comprimir foto" matTooltip="Comprimir foto">
-                                            <mat-icon>folder_zip</mat-icon>
-                                            </button> 
-                                        </div>
-                                </mat-card-subtitle>
-                                <img mat-card-xl-image  [src]="urlFoto5" alt="Foto 5" class="preview-image" />
-                                </mat-card-title-group>                        
-                            </mat-card>                            
-                        </div>    
-                    </div>
-                    <!-- Opciones fotos  -->
-                
-                    <div fxLayout="row" fxLayoutAlign="center stretch" >
-                        <button mat-button matStepperPrevious>Anterior</button>
-                        <button mat-button matStepperNext [disabled]="formFotosOT.invalid"
-                                *ngIf="(esChild === undefined || (esChild 
-                                        && tarea?.id === tareasChilds[tareasChilds.length-1]?.id))">Siguiente
-                        </button>
-                        <button mat-raised-button color="primary" *ngIf="fotosPorSubir" (click)="clickUpload()" 
-                                [disabled]="!existsArchivosPorSubir()">
-                            <em class="fas fa-sync fa-spin" *ngIf="!existsArchivosPorSubir()"></em>
-                            {{mensajeSubirArchivo}}
-                            <mat-icon>upload_file</mat-icon>
-                        </button>
-                    </div>                
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="formFirmasOT" (click)="scrollToTop('idFirmas')" id="idFirmas" perfectScrollbar
-                      *ngIf="!crear && !esPersonalized && (esChild === undefined 
-                            || (esChild && tarea?.id === tareasChilds[tareasChilds.length-1]?.id))" 
-                       errorMessage="Falta datos de firma."> <!-- Firmas y observaciones -->
-                <form [formGroup]="formFirmasOT"  (ngSubmit)="onSubmit('firmas')">
-                    <ng-template matStepLabel>Firmas y observaciones</ng-template>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Observaciones</mat-label>
-                            <textarea matInput placeholder="Observaciones" matTextareaAutosize required
-                                      matAutosizeMinRows="2" matAutosizeMaxRows="5" formControlName="observaciones"></textarea>
-                        </mat-form-field>
-                        <div fxLayout="column" fxLayoutAlign="center stretch" >
-                            <mat-error *ngIf="formFirmasOT.invalid">
-                                ¡La firma del cliente es obligatoria!
-                            </mat-error>
-                            <img [src]="transformBase64()" *ngIf="existeFirmaAprobada" alt="Firma Aprobador" id="imgFirma" />
-                            <button mat-raised-button color="primary" (click)="modalFaltanCampos()" *ngIf="!existeFirmaAprobada">
-                                Firmar Trabajo Aceptado 
-                                <mat-icon>draw</mat-icon>
-                            </button>
-                        </div>
-                                           
-                        <mat-form-field appearance="outline">
-                            <mat-label>Nombres y Apellidos</mat-label>
-                            <input type="text" placeholder="Nombre y Apellido" aria-label="Number" 
-                                    matInput formControlName="aceptado_por_nombre" required>
-                        </mat-form-field>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Rut</mat-label>
-                            <input type="text" placeholder="Rut" aria-label="Number" 
-                                    matInput formControlName="aceptado_por_rut" required>
-                        </mat-form-field>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Cargo</mat-label>
-                            <input type="text" placeholder="Cargo" aria-label="Number" 
-                                    matInput formControlName="aceptado_por_cargo" required>
-                        </mat-form-field>
-
-                        <div fxLayout="row" fxLayoutAlign="center stretch" >
-                            <button mat-button matStepperPrevious>Anterior</button>
-                            <button mat-button matStepperNext [disabled]="formFirmasOT.invalid">Guardar y Siguiente</button>
-
-                        </div>
-                </form>
-            </mat-step>
-            <mat-step *ngIf="!crear && !esPersonalized && (esChild === undefined
-                       || (esChild && tarea?.id === tareasChilds[tareasChilds.length-1]?.id))" 
-                       [stepControl]="formTimerEndOT"> <!-- Terminar OT-->
-                <form [formGroup]="formTimerEndOT" (ngSubmit)="onSubmit('finalizar')">
-                    <ng-template matStepLabel>Finalizar la OT</ng-template>
-                   
-                    <mat-card *ngIf="!verificaFormularios()"> 
-                        <em class="text-red">{{ camposFaltantes }}</em>
-                        <button  mat-raised-button color="primary" (click)="refresh()">                            
-                            <mat-icon class="icon-left-middle">refresh</mat-icon>                            
-                        </button>
-                    </mat-card>
-                    <div fxLayout="column" fxLayoutAlign="space-around stretch">
-                        <button mat-raised-button color="warn" (click)="modalFaltanCampos('parar')"
-                                [disabled]="!verificaFormularios()"
-                                *ngIf="!horaFinal">Terminar OT
-                            <mat-icon class="icon-right-middle">pan_tool</mat-icon>
-                        </button>
-                        <br />
-                        <mat-form-field appearance="outline">
-                            <mat-label>Hora Término</mat-label>
-                            <input matInput autocomplete="off" formControlName="horaTermino"
-                                   pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$" 
-                                   placeholder="Hora Término" type="text" required [readOnly]="true">
-                        </mat-form-field>                
-                        
-                        <mat-form-field appearance="outline">
-                            <mat-label>Tiempo Ejecución</mat-label>
-                            <input matInput placeholder="Tiempo Ejecución" formControlName="tiempoEjecucion"
-                                   pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
-                                   [readOnly]="true"
-                                   type="text" required>
-                        </mat-form-field>
-                
-                    </div>
-                    <div fxLayout="row" fxLayoutAlign="center stretch">
-                        <button mat-button matStepperPrevious>Anterior</button>
-                        <button mat-button matStepperNext [disabled]="formTimerEndOT.invalid || !verificaFormularios()">Siguiente</button>
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step *ngIf="!crear && !esPersonalized && (esChild === undefined 
-                       || (esChild && tarea?.id === tareasChilds[tareasChilds.length-1]?.id))">
-                <ng-template matStepLabel>Listo</ng-template>
-                <mat-card *ngIf="!verificaFormularios()"><em class="text-red">{{ camposFaltantes }}</em></mat-card>
-                <mat-card *ngIf="!existeFirmaAprobada"> <em>La OT debe ser firmada antes de cerrarse (Paso 5).</em></mat-card>
-                <div *ngIf="verificaFormularios() && existeFirmaAprobada">                    
-                    <p>Orden de trabajo finalizada.</p>
-                    <br />
-                    <mat-card *ngIf="tarea?.wo_final_date && tarea?.validated_by_description">
-                        Validada por <strong>{{ tarea?.validated_by_description }}</strong>, con fecha   
-                        <strong>{{tarea?.wo_final_date | date:"yyyy-MM-dd HH:mm"}}</strong>
-                    </mat-card>
-                    <br />
-                    <div fxLayout="row" fxLayoutAlign="center stretch" >
-                        <button mat-raised-button color="primary" 
-                                matTooltip="Validar y Finalizar la OT"
-                                aria-label="El Supervisor valida que la Órden de Trabajo está correcta y la finaliza."
-                                *ngIf="(esSupervisor || esAdministrador) && !tarea?.wo_final_date" (click)="validarOT()">
-                            Validar OT <mat-icon>verified</mat-icon>
-                        </button><br />
-                        <a mat-stroked-button routerLink="/task/services" *ngIf="esTecnico">Click aquí para ir al listado</a>
-                        <a mat-stroked-button routerLink="/task/status" *ngIf="!esTecnico && !esSupervisor">Click aquí para ir al listado</a>
-                    </div>
-                </div>                
-            </mat-step>
-        </mat-stepper>
+          <mat-form-field appearance="outline">
+            <mat-label>Tiempo Ejecución</mat-label>
+            <input
+              matInput
+              placeholder="Tiempo Ejecución"
+              formControlName="tiempoEjecucion"
+              pattern="^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$"
+              [readOnly]="true"
+              type="text"
+              required
+            />
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button mat-button matStepperPrevious>Anterior</button>
+          <button
+            mat-button
+            matStepperNext
+            [disabled]="formTimerEndOT.invalid || !verificaFormularios()"
+          >
+            Siguiente
+          </button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step
+      *ngIf="
+        !crear &&
+        !esPersonalized &&
+        (esChild === undefined ||
+          (esChild && tarea?.id === tareasChilds[tareasChilds.length - 1]?.id))
+      "
+    >
+      <ng-template matStepLabel>Listo</ng-template>
+      <mat-card *ngIf="!verificaFormularios()"
+        ><em class="text-red">{{ camposFaltantes }}</em></mat-card
+      >
+      <mat-card *ngIf="!existeFirmaAprobada">
+        <em>La OT debe ser firmada antes de cerrarse (Paso 5).</em></mat-card
+      >
+      <div *ngIf="verificaFormularios() && existeFirmaAprobada">
+        <p>Orden de trabajo finalizada.</p>
+        <br />
+        <mat-card
+          *ngIf="tarea?.wo_final_date && tarea?.validated_by_description"
+        >
+          Validada por <strong>{{ tarea?.validated_by_description }}</strong
+          >, con fecha
+          <strong>{{
+            tarea?.wo_final_date | date : "yyyy-MM-dd HH:mm"
+          }}</strong>
+        </mat-card>
+        <br />
+        <div fxLayout="row" fxLayoutAlign="center stretch">
+          <button
+            mat-raised-button
+            color="primary"
+            matTooltip="Validar y Finalizar la OT"
+            aria-label="El Supervisor valida que la Órden de Trabajo está correcta y la finaliza."
+            *ngIf="(esSupervisor || esAdministrador) && !tarea?.wo_final_date"
+            (click)="validarOT()"
+          >
+            Validar OT <mat-icon>verified</mat-icon></button
+          ><br />
+          <a mat-stroked-button routerLink="/task/services" *ngIf="esTecnico"
+            >Click aquí para ir al listado</a
+          >
+          <a
+            mat-stroked-button
+            routerLink="/task/status"
+            *ngIf="!esTecnico && !esSupervisor"
+            >Click aquí para ir al listado</a
+          >
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
 </div>
-
-

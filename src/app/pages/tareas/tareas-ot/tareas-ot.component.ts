@@ -107,7 +107,7 @@ export class TareasOtComponent
   public reporte: TareaOT[] = [];
   public loading: boolean = false;
   public error: any;
-  public dataSource: any;
+  public dataSource: MatTableDataSource<TareaOT>;
   public step = 0;
 
   // Filtros
@@ -127,7 +127,7 @@ export class TareasOtComponent
   public filtros = [];
   public fecha_inicio_start: string;
   public fecha_inicio_end: string;
-  public dataFiltered: string;
+  public dataFiltered: string = "";
 
   tipoServicio = [
     {
@@ -218,18 +218,16 @@ export class TareasOtComponent
     this.tareaService
       .updateTarea(type, username, otNumber)
       .then(() => {
-        return this.tareaService.getReporteTiemposPromise(
+        return this.tareaService.getReporteTiemposPromiseStatus(
           dateFrom.toISOString(),
           dateUntil.toISOString()
         );
       })
       .then((data) => {
-        console.log("reporte", typeof data);
-        const element = data.find((element) => element.wo_folio === "69255");
-        const { wo_folio, id_status_work_order } = element;
-        console.log("element", wo_folio, id_status_work_order);
         this.dataSource = new MatTableDataSource<TareaOT>(data);
-        this.dataSource.filter = this.dataFiltered.trim().toLowerCase();
+        if (this.dataFiltered) {
+          this.dataSource.filter = this.dataFiltered.trim().toLowerCase();
+        }
 
         // Cerrar el modal de espera
         clearInterval(timerInterval);
@@ -284,9 +282,19 @@ export class TareasOtComponent
       this.tareas = this.reporte;
       this.loading = loading;
       this.error = error;
-      this.dataSource = new MatTableDataSource<TareaOT>(this.tareas);
     });
-
+    const dateUntil = moment();
+    const dateFrom = moment().subtract("6", "months");
+    this.tareaService
+      .getReporteTiemposPromiseStatus(
+        dateFrom.toISOString(),
+        dateUntil.toISOString()
+      )
+      .then((data) => {
+        this.dataSource = new MatTableDataSource<TareaOT>(data);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      });
     console.log("this.tareas", this.tareas);
   }
 
@@ -299,6 +307,7 @@ export class TareasOtComponent
   }
 
   ngAfterViewInit() {
+    this.dataSource = new MatTableDataSource<TareaOT>(this.tareas);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }

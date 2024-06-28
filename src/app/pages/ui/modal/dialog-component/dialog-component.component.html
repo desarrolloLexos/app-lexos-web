@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>{{ data.isEdit ? "Editar" : "Agregar" }} Email</h1>
+<div mat-dialog-content class="content">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Email</mat-label>
+    <input
+      matInput
+      [(ngModel)]="data.email"
+      (ngModelChange)="validateEmail()"
+    />
+    <mat-error *ngIf="!emailValid && data.email"
+      >Correo electrónico no válido</mat-error
+    >
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button
+    mat-button
+    (click)="onSave()"
+    cdkFocusInitial
+    [disabled]="!emailValid"
+  >
+    {{ data.isEdit ? "Guardar" : "Agregar" }}
+  </button>
+</div>

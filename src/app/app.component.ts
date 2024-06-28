@@ -22,12 +22,33 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    /*this.tareasService.listadoCausaFalla().then((data) => {
+    this.tareasService.listadoCausaFalla().then((data) => {
       const dataRefined = [];
       data.forEach((element) => {
         dataRefined.push(element.description);
       });
       console.log("CAUSAS DE FALLA", dataRefined);
-    });*/
+    });
+    this.tareasService.listadoTipoDeFalla().then((data) => {
+      const dataRefined = [];
+      data.forEach((element) => {
+        dataRefined.push(element.description);
+      });
+      console.log("TIPOS DE FALLA", dataRefined);
+    });
+    this.tareasService.listadoMetodoDeteccion().then((data) => {
+      const dataRefined = [];
+      data.forEach((element) => {
+        dataRefined.push(element.description);
+      });
+      console.log("METODOS DE DETECCION", dataRefined);
+    });
+    this.tareasService.listadoMotivoDetencion().then((data) => {
+      const dataRefined = [];
+      data.forEach((element) => {
+        dataRefined.push(element.nombre);
+      });
+      console.log("MOTIVOS DE DETECCION", dataRefined);
+    });
   }
 }

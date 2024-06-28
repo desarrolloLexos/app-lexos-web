@@ -463,12 +463,28 @@ export class TareasService {
       where("creation_date", ">=", fechaDesde),
       where("creation_date", "<=", fechaHasta),
       orderBy("creation_date", "desc")
-      //limit(100) //TODO: remover esto
+      //limit(50) //TODO: remover esto
+    );
+
+    return (await getDocs(q)).docs.map((o) => o.data());
+  }
+
+  async getReporteTiemposPromiseStatus(fechaDesde: string, fechaHasta: string) {
+    const q = query(
+      collectionGroup(this.firestore, "tareas_ot").withConverter(
+        TareaOTConverter
+      ),
+      where("id_status_work_order", "in", [3, 6, 7, 8]),
+      where("creation_date", ">=", fechaDesde),
+      where("creation_date", "<=", fechaHasta),
+      orderBy("creation_date", "desc"),
+      limit(550)
     );
 
     return (await getDocs(q)).docs.map((o) => o.data());
   }
   async updateTarea(idstatus: number, userName: string, folio: string) {
+    console.log("updateTarea", idstatus, userName, folio);
     // Primero, obtén el ID del usuario basándote en el nombre.
     const usersRef = collection(this.firestore, "usuarios");
     const userQueryRef = query(usersRef, where("name", "==", userName));
@@ -503,5 +519,80 @@ export class TareasService {
       await updateDoc(tareaRef, { id_status_work_order: idstatus });
       console.log(`Estado actualizado para la tarea con ID ${docSnapshot.id}`);
     });
+  }
+
+  async forzarFinalizarTarea(tarea: TareaOT) {
+    const { requested_by, wo_folio, id_status_work_order } = tarea;
+    const usersRef = collection(this.firestore, "usuarios");
+    const userQueryRef = query(usersRef, where("name", "==", requested_by));
+    const userQuerySnapshot = await getDocs(userQueryRef);
+
+    if (userQuerySnapshot.empty) {
+      console.log("No se encontró ningún usuario con ese nombre");
+      return;
+    }
+    const userId = userQuerySnapshot.docs[0].id;
+    console.log(`ID del usuario encontrado: ${userId}`);
+    const tareasRef = collection(
+      this.firestore,
+      `usuarios/${userId}/tareas_ot`
+    );
+    const tareaQueryRef = query(tareasRef, where("wo_folio", "==", wo_folio));
+    const tareaQuerySnapshot = await getDocs(tareaQueryRef);
+    if (tareaQuerySnapshot.empty) {
+      console.log("No se encontraron tareas con el folio especificado");
+      return;
+    }
+
+    tareaQuerySnapshot.forEach(async (docSnapshot) => {
+      const tareaRef = docSnapshot.ref;
+      await updateDoc(tareaRef, { id_status_work_order: 3 });
+      console.log(`Estado actualizado para la tarea con ID ${docSnapshot.id}`);
+    });
+    console.log("############ forzarFinalizarTarea ############");
+    console.log(tarea);
+  }
+
+  async getTareaOtByFolio(tarea: TareaOT) {
+    console.log("getTareaOtByFolio", tarea);
+    const { requested_by, wo_folio, id_status_work_order } = tarea;
+    const usersRef = collection(this.firestore, "usuarios");
+    const userQueryRef = query(usersRef, where("name", "==", requested_by));
+    const userQuerySnapshot = await getDocs(userQueryRef);
+    if (userQuerySnapshot.empty) {
+      console.log("No se encontró ningún usuario con ese nombre");
+      return;
+    }
+    const userId = userQuerySnapshot.docs[0].id;
+    console.log(`ID del usuario encontrado: ${userId}`);
+    const tareasRef = collection(
+      this.firestore,
+      `usuarios/${userId}/tareas_ot`
+    );
+    const tareaQueryRef = query(tareasRef, where("wo_folio", "==", wo_folio));
+    const tareaQuerySnapshot = await getDocs(tareaQueryRef);
+    if (tareaQuerySnapshot.empty) {
+      console.log("No se encontraron tareas con el folio especificado");
+      return;
+    }
+    return tareaQuerySnapshot.docs.map((o) => o.data());
+  }
+
+  async listadoCausaFalla() {
+    //listado de la tabla firestore lista_causas_fallas
+    const q = query(collection(this.firestore, "lista_causas_fallas"));
+    return (await getDocs(q)).docs.map((o) => o.data());
+  }
+  async listadoTipoDeFalla() {
+    const q = query(collection(this.firestore, "tipo_falla"));
+    return (await getDocs(q)).docs.map((o) => o.data());
+  }
+  async listadoMetodoDeteccion() {
+    const q = query(collection(this.firestore, "lista_metodo_deteccion"));
+    return (await getDocs(q)).docs.map((o) => o.data());
+  }
+  async listadoMotivoDetencion() {
+    const q = query(collection(this.firestore, "lista_motivo_detencion"));
+    return (await getDocs(q)).docs.map((o) => o.data());
   }
 }
