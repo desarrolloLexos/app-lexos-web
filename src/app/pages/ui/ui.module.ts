@@ -14,6 +14,8 @@ import { ProgressComponent } from './progress/progress.component';
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { DialogComponent, DialogOverviewExampleDialog } from './dialog/dialog.component';
 import { SnackBarComponent } from './snack-bar/snack-bar.component';
+import { DialogComponentComponent } from './modal/dialog-component/dialog-component.component';
+import { CreateClienteComponent } from './modal/create-cliente/create-cliente.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'buttons', pathMatch: 'full'},
@@ -49,7 +51,9 @@ export const routes: Routes = [
         TooltipComponent,
         DialogComponent,
         DialogOverviewExampleDialog,
-        SnackBarComponent
+        SnackBarComponent,
+        DialogComponentComponent,
+        CreateClienteComponent
     ]
 })
 export class UiModule { }

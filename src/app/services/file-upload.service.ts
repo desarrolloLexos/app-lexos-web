@@ -1,19 +1,28 @@
-import { Storage, deleteObject, listAll, ref, uploadBytesResumable, getDownloadURL, getStorage, getBlob, getMetadata, uploadBytes, uploadString } from '@angular/fire/storage';
+import {
+  Storage,
+  deleteObject,
+  getBlob,
+  getDownloadURL,
+  getMetadata,
+  getStorage,
+  listAll,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+  uploadString,
+} from "@angular/fire/storage";
 
-import { FileUpload } from '../models/file-upload.model';
-import { Injectable } from '@angular/core';
-import { Store, UPDATE } from '@ngrx/store';
-import { AppState } from '../store/app.reducers';
-import { isLoading } from 'app/store/actions';
+import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { isLoading } from "app/store/actions";
+import { FileUpload } from "../models/file-upload.model";
+import { AppState } from "../store/app.reducers";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class FileUploadService {
-
-  constructor(
-    private storage: Storage,
-    private store: Store<AppState>) { }
+  constructor(private storage: Storage, private store: Store<AppState>) {}
 
   /**
    * Coloca el archivo en el Firestore Storage
@@ -21,9 +30,7 @@ export class FileUploadService {
    * @param fileUpload Objeto con archivo y nombre especificado.
    * @returns
    */
-  public pushFileToStorage(
-    path: string,
-    fileUpload: FileUpload) {
+  public pushFileToStorage(path: string, fileUpload: FileUpload) {
     const filePath = `${path}/${fileUpload.file.name}`;
 
     if (fileUpload) {
@@ -36,37 +43,51 @@ export class FileUploadService {
     }
   }
 
-  public pushBlobToStorage(path: string, blob: Blob, name: string, metadata?: any){
+  public pushBlobToStorage(
+    path: string,
+    blob: Blob,
+    name: string,
+    metadata?: any
+  ) {
     const filePath = `${path}/${name}`;
+
     if (blob) {
       this.store.dispatch(isLoading());
       const imgRef = ref(this.storage, filePath);
-      if(metadata){
+      if (metadata) {
         return uploadBytesResumable(imgRef, blob, metadata);
-      }else{
+      } else {
         return uploadBytesResumable(imgRef, blob);
       }
     }
   }
-
-  public pushBlobToStorageFullPath(pathWithName: string, blob: Blob, metadata?: any){
+  public isValidUrl(url: string): boolean {
+    const urlPattern =
+      /^(https:\/\/firebasestorage\.googleapis\.com\/v0\/b\/[a-zA-Z0-9-]+\.appspot\.com\/o\/[a-zA-Z0-9-%]+\.jpg\?alt=media&token=[a-zA-Z0-9-]+)$/;
+    return urlPattern.test(url);
+  }
+  public pushBlobToStorageFullPath(
+    pathWithName: string,
+    blob: Blob,
+    metadata?: any
+  ) {
     if (blob) {
       this.store.dispatch(isLoading());
       const imgRef = ref(this.storage, pathWithName);
-      if(metadata){
+      if (metadata) {
         return uploadBytesResumable(imgRef, blob, metadata);
-      }else{
+      } else {
         return uploadBytesResumable(imgRef, blob);
       }
     }
   }
 
-  public pushBase64ToStorage(path: string, base64: string, name: string){
+  public pushBase64ToStorage(path: string, base64: string, name: string) {
     const filePath = `${path}/${name}`;
-    if(base64){
+    if (base64) {
       this.store.dispatch(isLoading());
       const imgRef = ref(this.storage, filePath);
-      return uploadString(imgRef, base64, 'data_url');
+      return uploadString(imgRef, base64, "data_url");
     }
   }
 
@@ -75,41 +96,41 @@ export class FileUploadService {
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const int8Array = new Uint8Array(arrayBuffer);
     for (let i = 0; i < byteString.length; i++) {
-        int8Array[i] = byteString.charCodeAt(i);
+      int8Array[i] = byteString.charCodeAt(i);
     }
-    const blob = new Blob([int8Array], { type: 'image/jpeg' });
+    const blob = new Blob([int8Array], { type: "image/jpeg" });
     return blob;
   }
-
 
   public getImages(path: string) {
     const imgRef = ref(this.storage, path);
     return listAll(imgRef);
   }
 
-
   public deleteFile(path: string, fileUpload: FileUpload): void {
     // Create a reference to the file to delete
     const desertRef = ref(this.storage, `${path}/${fileUpload.name}`);
 
     // Delete the file
-    deleteObject(desertRef).then(() => {
-      // File deleted successfully
-      console.log('Archivo eliminado correctamente.');
-    }).catch((error) => {
-      // Uh-oh, an error occurred!
-      console.error('No se pudo eliminar el archivo. ', error);
-    });
+    deleteObject(desertRef)
+      .then(() => {
+        // File deleted successfully
+        console.log("Archivo eliminado correctamente.");
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        console.error("No se pudo eliminar el archivo. ", error);
+      });
   }
 
- /**
-  * Elimina un archivo del Storage dado su URL.
-  * @param url URL
-  * @returns Promise<void | error>
-  */
+  /**
+   * Elimina un archivo del Storage dado su URL.
+   * @param url URL
+   * @returns Promise<void | error>
+   */
   public deleteFileByURL(url: string) {
     const urlRef = ref(this.storage, url);
-   return  deleteObject(urlRef);
+    return deleteObject(urlRef);
   }
 
   public getURLByReference(path: string) {
@@ -121,11 +142,11 @@ export class FileUploadService {
     return getDownloadURL(starsRef);
   }
 
-  public async compressFileByURL(url: string){
+  public async compressFileByURL(url: string) {
     const urlRef = ref(this.storage, url);
     const metadata = await getMetadata(urlRef);
-    
-    getBlob(urlRef).then( (blobFile) => {
+
+    getBlob(urlRef).then((blobFile) => {
       const $canvas = document.createElement("canvas");
       const imagen = new Image();
       imagen.onload = () => {
@@ -135,11 +156,11 @@ export class FileUploadService {
         $canvas.toBlob(
           (blob) => {
             if (blob !== null) {
-              uploadBytes(urlRef, blob).then( (result) => {
-                console.log('archivo actualizado', result.metadata);
-              })
+              uploadBytes(urlRef, blob).then((result) => {
+                console.log("archivo actualizado", result.metadata);
+              });
             } else {
-              console.log('No se pudo actualizar el archivo');
+              console.log("No se pudo actualizar el archivo");
             }
           },
           "image/jpeg",

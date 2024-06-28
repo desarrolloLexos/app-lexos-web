@@ -1,0 +1,136 @@
+<app-content-header
+  #tableHeader
+  [icon]="'library_books'"
+  [title]="'Sucursales'"
+  [hideBreadcrumb]="false"
+  [hasBgImage]="true"
+  [class]="'pb-4'"
+></app-content-header>
+
+<!--<button (click)="openDialogCreateCliente()" mat-button>Crear cliente</button>-->
+<div class="spinner-form" *ngIf="cargando">
+  <mat-progress-spinner
+    [mode]="'indeterminate'"
+    [diameter]="50"
+  ></mat-progress-spinner>
+</div>
+<mat-accordion displayMode="default" [multi]="true" [hideToggle]="false">
+  <mat-expansion-panel *ngFor="let cliente of TREE_DATA" [hideToggle]="false">
+    <mat-expansion-panel-header>
+      <div class="header-content">
+        <span>{{ cliente.cliente.cliente }}</span>
+        <button
+          (click)="eliminarCliente($event, cliente)"
+          mat-flat-button
+          color="warn"
+        >
+          Eliminar
+        </button>
+      </div>
+    </mat-expansion-panel-header>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Buscar Sucursal</mat-label>
+      <input matInput (input)="applyFilter($event, cliente)" />
+    </mat-form-field>
+
+    <mat-accordion displayMode="default" [multi]="true" [hideToggle]="false">
+      <mat-expansion-panel
+        *ngFor="let sucursal of cliente.filteredSucursales"
+        [hideToggle]="false"
+      >
+        <mat-expansion-panel-header>
+          {{ sucursal.nombre }}
+        </mat-expansion-panel-header>
+        <div class="sucursal-info">
+          <p><strong>Dirección:</strong> {{ sucursal.direccion }}</p>
+          <p><strong>Ciudad:</strong> {{ sucursal.ciudad }}</p>
+          <p><strong>CECO:</strong> {{ sucursal.ceco }}</p>
+          <p><strong>Código:</strong> {{ sucursal.codigo }}</p>
+          <p><strong>Longitud:</strong> {{ sucursal.longitud }}</p>
+          <p>
+            <strong>Latitud:</strong> {{ sucursal.latitude || "no ingresada" }}
+          </p>
+
+          <div class="email-info">
+            <p>
+              <strong>Email sucursal:</strong>
+              {{ sucursal.emailSucursal || "No ingresado" }}
+            </p>
+            <button
+              (click)="openDialog('add', sucursal, cliente, 'sucursal')"
+              mat-flat-button
+              color="primary"
+              *ngIf="!sucursal.emailSucursal"
+            >
+              Agregar
+            </button>
+            <button
+              (click)="openDialog('edit', sucursal, cliente, 'sucursal')"
+              mat-flat-button
+              color="warn"
+              *ngIf="sucursal.emailSucursal"
+            >
+              Modificar
+            </button>
+          </div>
+          <hr />
+          <div class="email-info">
+            <p>
+              <strong>Email supervisor:</strong>
+              {{ sucursal.emailSupervisor || "No ingresado" }}
+            </p>
+            <button
+              (click)="openDialog('add', sucursal, cliente, 'supervisor')"
+              mat-flat-button
+              color="primary"
+              *ngIf="!sucursal.emailSupervisor"
+            >
+              Agregar
+            </button>
+            <button
+              (click)="openDialog('edit', sucursal, cliente, 'supervisor')"
+              mat-flat-button
+              color="warn"
+              *ngIf="sucursal.emailSupervisor"
+            >
+              Modificar
+            </button>
+          </div>
+          <hr />
+          <div class="email-info">
+            <p>
+              <strong>Email Supervisor Lexos:</strong>
+              {{ sucursal.emailSupervisorLexos || "No ingresado" }}
+            </p>
+            <button
+              (click)="openDialog('add', sucursal, cliente, 'lexos')"
+              mat-flat-button
+              color="primary"
+              *ngIf="!sucursal.emailSupervisorLexos"
+            >
+              Agregar
+            </button>
+            <button
+              (click)="openDialog('edit', sucursal, cliente, 'lexos')"
+              mat-flat-button
+              color="warn"
+              *ngIf="sucursal.emailSupervisorLexos"
+            >
+              Modificar
+            </button>
+          </div>
+          <hr />
+          <br />
+          <button
+            mat-stroked-button
+            (click)="eliminarSucursal(sucursal.uid, cliente.cliente.uid)"
+            color="accent"
+          >
+            Eliminar Sucursal
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-expansion-panel>
+</mat-accordion>

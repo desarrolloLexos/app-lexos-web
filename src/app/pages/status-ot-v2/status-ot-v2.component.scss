@@ -1,0 +1,374 @@
+table {
+  width: 100%;
+}
+.example-container {
+  /*IMPORTANTE*/
+  // height: calc(100vh - (56px + 56px)); // diferencia del footer y el header.
+  // height: calc(98vh);
+  overflow: scroll;
+}
+
+#main.ps {
+  position: sticky;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-table-sticky {
+  background: #59abfd;
+  opacity: 1;
+}
+
+.mat-row:hover {
+  background-color: rgba(223, 221, 221, 0.877);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+// .example-sticky-toggle-group {
+//     margin: 8px;
+// }
+
+// .mat-column-filler {
+//     padding: 0 8px;
+//     font-size: 10px;
+//     text-align: center;
+// }
+
+// .mat-header-cell,
+// .mat-footer-cell,
+// .mat-cell {
+//     min-width: 50px;
+//     box-sizing: border-box;
+// }
+
+// .bloqsearch {
+//     width: 2735px;
+// }
+
+// mat-form-field,
+// .mat-header-row,
+// .mat-footer-row,
+// .mat-row {
+//     min-width: 1400px;
+//     /* 24 columns, 80px each */
+// }
+mat-table {
+  min-width: 2185px;
+}
+.mat-table-sticky-border-elem-top {
+  border-bottom: 2px solid midnightblue;
+}
+
+.mat-table-sticky-border-elem-right {
+  border-left: 2px solid midnightblue;
+}
+
+.mat-table-sticky-border-elem-bottom {
+  border-top: 2px solid midnightblue;
+}
+
+.mat-table-sticky-border-elem-left {
+  border-right: 2px solid midnightblue;
+}
+
+.mat-column-items_log_description {
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  padding-right: 20px;
+}
+
+.spinner-table {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.btn-combinar {
+  position: relative;
+  cursor: pointer;
+  // z-index: 999999;
+  // left: 20px;
+  // bottom: 170px;
+  opacity: 0.5;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.75);
+  transition: 0.3s;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btn-anular {
+  position: relative;
+  cursor: pointer;
+  // z-index: 999998;
+  // left: 20px;
+  // bottom: 60px;
+  opacity: 0.5;
+  // color: #fff !important;
+  transition: 0.3s;
+  // background-color: red !important;
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.mat-menu {
+  padding: 0 !important;
+}
+
+.mat-form-field {
+  width: 100% !important;
+}
+
+.mat-expansion-panel-body {
+  background-color: ghostwhite;
+  padding: 0 10px 16px !important;
+}
+
+.mat-expansion-panel-header {
+  background-color: lavender;
+}
+
+.mat-form-field-infix {
+  display: flex !important;
+}
+
+.bg-yellow {
+  background-color: #f8fd13;
+}
+
+.bg-finaly {
+  background-color: lightgreen;
+}
+
+.bg-danger {
+  background-color: rgb(255, 94, 94);
+  color: white !important;
+}
+
+@mixin mat-table-columns($columns) {
+  .mat-column- {
+    @each $colName, $props in $columns {
+      $width: map-get($props, "width");
+      &#{$colName} {
+        flex: $width;
+        min-width: $width;
+        @if map-has-key($props, "color") {
+          color: map-get($props, "color");
+        }
+      }
+    }
+  }
+}
+
+// @include mat-table-columns(( wo_folio: (width: 160px), id_status_work_order: (width: 80px), code: (width: 100px), items_log_description: (width: 320px), is_offline: (width: 120px), description: (width: 300px), trigger_description: (width: 145px), parent_description: (width: 400px), items_log_types_description: (width: 90px), groups_1_description: (width: 150px), groups_2_description: (width: 150px), completed_percentage: (width: 80px), duration: (width: 80px), real_duration: (width: 80px), tasks_log_task_type_main: (width: 200px), num_iterations: (width: 80px), cal_date_maintenance: (width: 130px), date_maintenance: (width: 130px), initial_date: (width: 130px), final_date: (width: 130px), creation_date: (width: 130px), wo_final_date: (width: 130px), stop_assets: (width: 110px), stop_assets_sec: (width: 270px), real_stop_assets_sec: (width: 90px), resources_hours: (width: 120px), resources_inventory: (width: 150px), personnel_description: (width: 220px), id_parent: (width: 140px), requested_by: (width: 220px), priorities_description: (width: 105px), task_note: (width: 210px), note: (width: 180px), event_date: (width: 130px), rating: (width: 120px), id_request: (width: 125px), work_orders_status_custom_description: (width: 160px)));
+@include mat-table-columns(
+  (
+    select: (
+      width: 30px,
+    ),
+    wo_folio: (
+      width: 60px,
+    ),
+    tasks_log_task_type_main: (
+      width: 180px,
+    ),
+    id_status_work_order: (
+      width: 80px,
+    ),
+    personnel_description: (
+      width: 150px,
+    ),
+    local: (
+      width: 150px,
+    ),
+    items_log_description: (
+      width: 230px,
+    ),
+    //  is_offline: (width: 120px),
+    description:
+      (
+        width: 250px,
+      ),
+    //  trigger_description: (width: 145px),
+    //  parent_description: (width: 400px),
+    //  items_log_types_description: (width: 90px),
+    //  groups_1_description: (width: 150px),
+    //  groups_2_description: (width: 150px),
+    //  completed_percentage: (width: 80px),
+    //  duration: (width: 80px),
+    real_duration:
+      (
+        width: 80px,
+      ),
+    //  num_iterations: (width: 80px),
+    cal_date_maintenance:
+      (
+        width: 130px,
+      ),
+    //  date_maintenance: (width: 130px),
+    initial_date:
+      (
+        width: 130px,
+      ),
+    final_date: (
+      width: 130px,
+    ),
+    creation_date: (
+      width: 130px,
+    ),
+    wo_final_date: (
+      width: 130px,
+    ),
+    //  stop_assets: (width: 110px),
+    //  stop_assets_sec: (width: 270px),
+    //  real_stop_assets_sec: (width: 90px),
+    //  resources_hours: (width: 120px),
+    //  resources_inventory: (width: 150px),
+    //  id_parent: (width: 140px),
+    requested_by:
+      (
+        width: 220px,
+      ),
+    priorities_description: (
+      width: 105px,
+    ),
+    //  task_note: (width: 210px),
+    //  note: (width: 180px),
+    //  event_date: (width: 130px),
+    //  rating: (width: 120px),
+    //  id_request: (width: 125px),
+    //  work_orders_status_custom_description: (width: 160px),,,,,,,,,,,,,,,,,,,,,,,,
+  )
+);
+
+.mailbox-toolbar {
+  background: transparent !important;
+  height: 40px;
+  margin-top: -40px;
+  .mail-search {
+    width: 0;
+    overflow: hidden;
+    transition: 0.3s;
+    font-size: 14px;
+    .mat-form-field {
+      width: 100% !important;
+      text-align: center !important;
+      height: 36px;
+    }
+    .mat-form-field-infix {
+      padding: 5px;
+      width: 50px;
+    }
+    .mat-input-element {
+      text-align: center;
+    }
+    &.show {
+      width: 100%;
+      overflow: visible;
+    }
+  }
+  .compose {
+    line-height: 30px;
+    box-shadow: none;
+  }
+}
+
+/* Estilos de celda normal */
+.mat-cell.custom-cell {
+  transition: background-color 0.3s ease;
+}
+
+/* Estilos al hacer hover */
+.mat-cell.custom-cell:hover {
+  filter: brightness(75%);
+}
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+.mail-search {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Ajusta según el contenedor */
+}
+
+.row {
+  display: flex;
+
+  justify-content: space-around; /* Esto espaciará los inputs uniformemente */
+  width: 100%; /* Asegura que la fila use todo el ancho disponible */
+}
+.spinner-form {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.mat-form-field {
+  flex: 1 1 30%; /* Cada campo ocupa aproximadamente un tercio del espacio disponible */
+  padding: 8px; /* Espaciado para no tocar los bordes de otros campos */
+}
+.container {
+  margin: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid rebeccapurple;
+}
+button {
+  margin: 0 0 0 20px;
+}
+.sucursal-info {
+  padding: 10px;
+}
+
+.email-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.email-info p {
+  margin: 0;
+  flex: 1;
+}
+
+.email-info button {
+  margin-left: 10px;
+}
+
+.mat-expansion-panel-header {
+  background-color: #f1f1f1;
+}
+
+.mat-expansion-panel-body {
+  background-color: #fafafa;
+}
+
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  align-items: center;
+}
+.header-content span {
+  flex-grow: 1;
+}

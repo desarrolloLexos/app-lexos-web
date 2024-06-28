@@ -42,6 +42,7 @@
     "fast-json-stringify": "^5.1.0",
     "file-saver": "^2.0.5",
     "get-image-size": "^1.0.3",
+    "idb": "^8.0.0",
     "image-size": "^1.0.2",
     "leaflet-map": "0.2.1",
     "mat-select-filter": "^2.4.1",

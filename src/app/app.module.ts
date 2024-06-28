@@ -1,58 +1,60 @@
-import { CalendarModule, DateAdapter } from "angular-calendar";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { getApp, initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getAuth, provideAuth } from "@angular/fire/auth";
 import { initializeFirestore, provideFirestore } from "@angular/fire/firestore";
 import {
+  StorageModule,
   getStorage,
   provideStorage,
-  StorageModule,
 } from "@angular/fire/storage";
-import { getApp, initializeApp, provideFirebaseApp } from "@angular/fire/app";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CalendarModule, DateAdapter } from "angular-calendar";
 
 import { AgmCoreModule } from "@agm/core";
+import { AngularSignaturePadModule } from "@almothafar/angular-signature-pad";
+import { OverlayContainer } from "@angular/cdk/overlay";
+import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
+import { GoogleMapsModule } from "@angular/google-maps";
+import { MAT_DATE_LOCALE } from "@angular/material/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreModule } from "@ngrx/store";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
+import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import {
+  PERFECT_SCROLLBAR_CONFIG,
+  PerfectScrollbarConfigInterface,
+  PerfectScrollbarModule,
+} from "ngx-perfect-scrollbar";
+import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app.routing";
 import { AppSettings } from "./app.settings";
-import { ApplicationsComponent } from "./theme/components/applications/applications.component";
+import { MaterialElevationDirective } from "./directives/material-elevation.directive";
 import { BlankComponent } from "./pages/blank/blank.component";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { BrowserModule } from "@angular/platform-browser";
-import { CustomOverlayContainer } from "./theme/utils/custom-overlay-container";
-import { EffectsArray } from "./store/effects";
-import { EffectsModule } from "@ngrx/effects";
 import { ErrorComponent } from "./pages/errors/error/error.component";
+import { NotFoundComponent } from "./pages/errors/not-found/not-found.component";
+import { PagesComponent } from "./pages/pages.component";
+import { SearchComponent } from "./pages/search/search.component";
+import { StatusOtV2Component } from "./pages/status-ot-v2/status-ot-v2.component";
+import { DialogComponentComponent } from "./pages/ui/modal/dialog-component/dialog-component.component";
+import { SharedModule } from "./shared/shared.module";
+import { appReducers } from "./store/app.reducers";
+import { EffectsArray } from "./store/effects";
+import { ApplicationsComponent } from "./theme/components/applications/applications.component";
 import { FavoritesComponent } from "./theme/components/favorites/favorites.component";
 import { FlagsMenuComponent } from "./theme/components/flags-menu/flags-menu.component";
 import { FullScreenComponent } from "./theme/components/fullscreen/fullscreen.component";
 import { HorizontalMenuComponent } from "./theme/components/menu/horizontal-menu/horizontal-menu.component";
-import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { VerticalMenuComponent } from "./theme/components/menu/vertical-menu/vertical-menu.component";
 import { MessagesComponent } from "./theme/components/messages/messages.component";
-import { NgModule } from "@angular/core";
-import { NotFoundComponent } from "./pages/errors/not-found/not-found.component";
-import { OverlayContainer } from "@angular/cdk/overlay";
-import {
-  PERFECT_SCROLLBAR_CONFIG,
-  PerfectScrollbarModule,
-  PerfectScrollbarConfigInterface,
-} from "ngx-perfect-scrollbar";
-import { PagesComponent } from "./pages/pages.component";
-import { SharedModule } from "./shared/shared.module";
 import { SidenavComponent } from "./theme/components/sidenav/sidenav.component";
-import { StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { StoreModule } from "@ngrx/store";
 import { TopInfoContentComponent } from "./theme/components/top-info-content/top-info-content.component";
 import { UserMenuComponent } from "./theme/components/user-menu/user-menu.component";
-import { VerticalMenuComponent } from "./theme/components/menu/vertical-menu/vertical-menu.component";
-import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
-import { appReducers } from "./store/app.reducers";
-import { environment } from "../environments/environment";
-import { MAT_DATE_LOCALE } from "@angular/material/core";
-import { HttpClientModule } from "@angular/common/http";
 import { PipesModule } from "./theme/pipes/pipes.module";
-import { SearchComponent } from "./pages/search/search.component";
-import { GoogleMapsModule } from "@angular/google-maps";
-import { MaterialElevationDirective } from "./directives/material-elevation.directive";
-import { AngularSignaturePadModule } from "@almothafar/angular-signature-pad";
+import { CustomOverlayContainer } from "./theme/utils/custom-overlay-container";
 
 // NgRX
 
@@ -119,6 +121,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     UserMenuComponent,
     FavoritesComponent,
     MaterialElevationDirective,
+    StatusOtV2Component,
+    DialogComponentComponent,
     // TareasOtComponent
   ],
   providers: [
@@ -131,5 +135,6 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     { provide: MAT_DATE_LOCALE, useValue: "en-GB" },
   ],
   bootstrap: [AppComponent],
+  entryComponents: [DialogComponentComponent], // Asegúrate de incluir el diálogo en entryComponents si usas versiones anteriores de Angular
 })
 export class AppModule {}
